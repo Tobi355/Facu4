@@ -1,6 +1,6 @@
 import http from 'http';
-import productos from "../Clase4/data/productos.js";
-import {createPages, createProductList} from "../Clase4/pages/utils.js";
+import productos from "./data/productos.js";
+import {createPages, createProductList} from "./pages/utils.js";
 const server = http.createServer( (req, res) => {
     console.log(req.url)
     res.write('<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Document</title></head><body>')
