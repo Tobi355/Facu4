@@ -1,0 +1,22 @@
+{
+  "name": "clase_04",
+  "version": "1.0.0",
+  "description": "inicializa el repositorio\r git init  \r Le dice a git donde tiene que subir el codigo\r git remote add origin https://github.com/victor-villafane/DWM4AV.git\r Le digo que archivos quiero pasar al working directory\r git add . -> sube todo\r git add clase_02/readme.md",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node main.js",
+    "dev": "nodemon app/main.js",
+    "ajax": "nodemon app/ajax.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "3.1.14"
+  },
+  "dependencies": {
+    "express": "5.2.1"
+  }
+}

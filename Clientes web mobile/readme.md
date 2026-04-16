@@ -1,10 +1,13 @@
 # iniciar pryecto de vite:
 npm create vite@latest
-npm install --save-dev @vitejs
+
+# instalar vue en el proyecto:
+npm install vue@latest
 
 # iniciar tailwind
 npm install tailwindcss @tailwindcss/vite
-# agregar plugin de vite en el js:
+
+# agregar plugin de tailwind en el js:
 import tailwind from '@tailwindcss/vite'
 export default {
     plugins [tailwind()]
