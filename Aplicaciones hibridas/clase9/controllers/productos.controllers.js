@@ -1,20 +1,20 @@
 import * as productosService from "../services/productos.services.js"
-import * as prouctosView from "../views/productos.views.js"
+import * as productosView from "../views/productos.views.js"
 
 export async function getProductos(req, res) {
     try {
         const productos = await productosService.getProductos()
-        res.send(prouctosView.createProductList(productos), "Listado de productos")
+        res.send(productosView.createProductList(productos), "Listado de productos")
     } catch (error) {
         res.send("404")
     }
 }
 
 export async function getProductosById(req, res) {
-    const idProducto = req.params.idProductos
+    const idProducto = req.params.idProducto
     try {
         const producto = await productosService.getProductosById(idProducto)
-        res.send(prouctosView.createProductDetail(producto))
+        res.send(productosView.createProductDetail(producto))
     } catch (error) {
         console.log(error)
         res.send("404")
@@ -22,13 +22,13 @@ export async function getProductosById(req, res) {
 }
 
 export function productoForm(req, res) {
-    res.send(prouctosView.productoForm())
+    res.send(productosView.productoForm())
 }
 
 export async function guardarProducto(req, res) {
     try {
         const producto = await productosService.guardarProducto(req.body)
-        res.send(prouctosView.createProductDetail(producto))
+        res.send(productosView.createProductDetail(producto))
     } catch (error) {
         console.log(error)
         res.send("404")
@@ -39,7 +39,7 @@ export async function borrarProductoForm(req, res) {
     const id = req.params.idProducto
     try {
         const producto = await productosService.getProductosById(id)
-        res.send(prouctosView.borrarProductoForm(producto))
+        res.send(productosView.borrarProductoForm(producto))
     } catch (error) {
 
     }
@@ -49,7 +49,7 @@ export async function borrarProducto(req, res) {
     const id = req.params.idProducto
     try {
         const producto = await productosService.borrarProducto(id)
-        res.send(prouctosView.createProductDetail(producto))
+        res.send(productosView.createProductDetail(producto))
     } catch (error) {
         console.log(error)
         res.send("404")
@@ -60,7 +60,7 @@ export async function editarProductoForm(req, res) {
     const id = req.params.idProducto
     try {
         const producto = await productosService.getProductosById(id)
-        res.send(prouctosView.editarProductoForm(producto))
+        res.send(productosView.editarProductoForm(producto))
     } catch (error) {
 
     }
@@ -75,7 +75,7 @@ export async function editarProducto(req, res) {
     }
     try {
         const productoEditado = await productosService.editarProducto(producto)
-        res.send(prouctosView.createProductDetail(productoEditado))
+        res.send(productosView.createProductDetail(productoEditado))
     } catch (error) {
         console.log(error)
         res.send("404")

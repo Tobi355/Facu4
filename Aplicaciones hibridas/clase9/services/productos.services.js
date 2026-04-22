@@ -1,4 +1,3 @@
-import { readFile, writeFile } from "fs/promises"
 import { MongoClient, ObjectId } from "mongodb"
 
 const client = new MongoClient("mongodb+srv://admin:admin@dwm4av.3ndyw29.mongodb.net/")
@@ -7,13 +6,17 @@ const db = client.db("dwm4av")
 export async function getProductos(filter = {}) {
     console.log(filter)
     const filterMongo = {}
-    if (filter?.precio_max) filterMongo.precio = { $lte: parseInt(filter?.precio_max) }  //https://www.mongodb.com/es/docs/manual/reference/operator/query/lte/
-    if (filter?.precio_min) filterMongo.precio = { $gte: parseInt(filter?.precio_min) }  //https://www.mongodb.com/es/docs/manual/reference/operator/query/gte/
-
-    if (filter?.precio_max && filter?.precio_min) filterMongo.$and = [
-        { precio: { $lte: parseInt(filter?.precio_max) } }, 
-        { precio: { $gte: parseInt(filter?.precio_min) } }
-    ]
+    
+    if (filter?.precio_max && filter?.precio_min) {
+        filterMongo.$and = [
+            { precio: { $lte: parseInt(filter?.precio_max) } }, 
+            { precio: { $gte: parseInt(filter?.precio_min) } }
+        ]
+    } else if (filter?.precio_max) {
+        filterMongo.precio = { $lte: parseInt(filter?.precio_max) }  //https://www.mongodb.com/es/docs/manual/reference/operator/query/lte/
+    } else if (filter?.precio_min) {
+        filterMongo.precio = { $gte: parseInt(filter?.precio_min) }  //https://www.mongodb.com/es/docs/manual/reference/operator/query/gte/
+    }
 
     try {
         await client.connect()

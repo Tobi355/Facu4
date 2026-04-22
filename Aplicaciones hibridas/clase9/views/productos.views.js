@@ -33,8 +33,8 @@ export function productoForm() {
     let html = ""
     html += "<h1>Nuevo producto</h1>"
     html += "<form action='/productos/nuevo' method='post' >"
-    html += "<input type='text' name='precio'>"
     html += "<input type='text' name='nombre'>"
+    html += "<input type='text' name='precio'>"
     html += "<input type='submit' name='guardar'>"
     html += "</form>"
     return createPage(html, "Detalle producto")
@@ -45,7 +45,6 @@ export function borrarProductoForm(cafe) {
     html += "<h1>Borrar producto</h1>"
     html += `<p>id: ${cafe?.id}</p>`
     html += `<p>Nombre: ${cafe.nombre}</p>`
-    html += `<p>Precio: ${cafe.precio}</p>`
     html += `<p>Precio: ${cafe.precio}</p>`
     html += `<form action='/productos/borrar/${cafe.id}' method='post' >`
     html += "<input type='submit' value='borrar'>"

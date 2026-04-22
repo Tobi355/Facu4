@@ -11,4 +11,4 @@ en el json cambiar el "type" a "type=module"
 npm i express -e
 
 # instalar mongodb
-npm install mongo db
+npm i mongo db

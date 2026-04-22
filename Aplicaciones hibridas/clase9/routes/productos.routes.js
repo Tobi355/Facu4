@@ -13,6 +13,6 @@ router.post("/productos/borrar/:idProducto", productosController.borrarProducto)
 router.get("/productos/editar/:idProducto", productosController.editarProductoForm)
 router.post("/productos/editar/:idProducto", productosController.editarProducto)
 
-router.get("/productos/:idProductos", productosController.getProductosById)
+router.get("/productos/:idProducto", productosController.getProductosById)
 
 export default router
