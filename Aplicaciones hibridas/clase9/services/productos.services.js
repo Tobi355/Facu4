@@ -1,6 +1,6 @@
 import { MongoClient, ObjectId } from "mongodb"
 
-const client = new MongoClient("mongodb+srv://admin:admin@dwm4av.3ndyw29.mongodb.net/")
+const client = new MongoClient("mongodb+srv://admin:admin@aplicacioneshibridas.to8plv5.mongodb.net/")
 const db = client.db("dwm4av")
 
 export async function getProductos(filter = {}) {
