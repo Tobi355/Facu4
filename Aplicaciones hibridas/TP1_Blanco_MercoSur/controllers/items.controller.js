@@ -4,6 +4,8 @@ import {
   updateItemById,
   deleteItemById
 } from '../services/items.service.js';
+import { findClientById } from '../services/clients.service.js';
+import { ObjectId } from 'mongodb';
 
 export const getAllItems = async (req, res) => {
   try {
@@ -30,6 +32,17 @@ export const createItem = async (req, res) => {
 
     if (!category || !category.trim()) {
       return res.status(400).json({ success: false, message: 'El campo "category" es obligatorio' });
+    }
+
+    if (clientId && !ObjectId.isValid(clientId)) {
+      return res.status(400).json({ success: false, message: 'clientId inválido' });
+    }
+
+    if (clientId) {
+      const clientExists = await findClientById(clientId);
+      if (!clientExists) {
+        return res.status(404).json({ success: false, message: 'El cliente especificado no existe' });
+      }
     }
 
     const newItem = {

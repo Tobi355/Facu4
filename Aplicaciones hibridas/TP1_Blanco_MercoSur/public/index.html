@@ -331,6 +331,41 @@
   <!-- Toast notifications -->
   <div class="toast hidden" id="toast"></div>
 
+  <!-- Modal de detalle de item -->
+  <div class="modal-overlay hidden" id="item-modal">
+    <div class="modal-box item-modal-box">
+      <button class="modal-close" id="item-modal-close">✕</button>
+
+      <div class="item-modal-img-wrap">
+        <img id="item-modal-img" src="" alt="" />
+        <span class="item-modal-category" id="item-modal-category"></span>
+      </div>
+
+      <div class="item-modal-body">
+        <p class="modal-subtitle" id="item-modal-eyebrow">Del fuego al plato</p>
+        <h3 class="modal-title" id="item-modal-name"></h3>
+        <p class="item-modal-desc" id="item-modal-desc"></p>
+
+        <div class="item-modal-meta">
+          <div class="item-modal-meta-row">
+            <span class="item-modal-meta-label">Categoría</span>
+            <span class="item-modal-meta-value" id="item-modal-cat-value"></span>
+          </div>
+          <div class="item-modal-meta-row">
+            <span class="item-modal-meta-label">Disponibilidad</span>
+            <span class="item-modal-meta-value item-modal-available">
+              <span class="item-card__dot"></span> Disponible ahora
+            </span>
+          </div>
+        </div>
+
+        <a class="btn btn-primary item-modal-btn" id="item-modal-link" href="#">
+          Consultar este plato
+        </a>
+      </div>
+    </div>
+</div>
+
   <script src="js/main.js" type="module"></script>
 </body>
 </html>

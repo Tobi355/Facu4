@@ -1,3 +1,4 @@
+import { get } from 'http';
 import { getDB } from '../config/db.js';
 import { ObjectId } from 'mongodb';
 
@@ -30,4 +31,10 @@ export const findItemsByClientId = async (clientId) => {
     return await db.collection(ITEMS_COLLECTION).find({
         clientId: new ObjectId(clientId)
     }).toArray();
+};
+
+export const findClientById = async (id) => {
+  if (!ObjectId.isValid(id)) return null;
+  const db = getDB();
+  return await db.collection('clients').findOne({ _id: new ObjectId(id) });
 };

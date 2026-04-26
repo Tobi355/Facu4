@@ -5,6 +5,10 @@
 
 const API_BASE = 'http://localhost:3333';
 
+// Si tienes un link propio para usar en todos los items, colócalo aquí.
+// Si prefieres usar un archivo local, descárgalo en public/images y usa '/images/tu-imagen.jpg'.
+const CUSTOM_ITEM_IMAGE = '';
+
 // ── Estado global de la app ──────────────────
 const state = {
   allItems:       [],
@@ -215,11 +219,9 @@ async function fetchClientItems(clientId) {
  * @returns {string} HTML string
  */
 function buildItemCard(item) {
-  const imageSrc = item.image && item.image.trim()
+  const imageSrc = CUSTOM_ITEM_IMAGE || (item.image && item.image.trim()
     ? item.image
-    : `https://picsum.photos/seed/${item._id}/400/300`;
-
-  const linkHref = item.link && item.link.trim() ? item.link : '#menu';
+    : `https://picsum.photos/seed/${item._id}/400/300`);
 
   // Truncar descripción a 110 caracteres
   const desc = item.description && item.description.length > 110
@@ -230,11 +232,12 @@ function buildItemCard(item) {
     <article class="item-card" data-id="${item._id}">
       <div class="item-card__img-wrap">
         <img
-          class="item-card__img"
+          class="item-card__img loading"
           src="${imageSrc}"
           alt="${item.name}"
           loading="lazy"
-          onerror="this.src='https://picsum.photos/seed/fallback${Math.random()}/400/300'"
+          onload="this.classList.remove('loading')"
+          onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMmMyZjFhIi8+PHRleHQgeD0iNTAlIiB5PSI0NSUiIGZpbGw9IiM4YTdhNmEiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+U2luIGltYWdlbjwvdGV4dD48L3N2Zz4='; this.classList.remove('loading')"
         />
         <span class="item-card__category">${item.category}</span>
       </div>
@@ -242,7 +245,13 @@ function buildItemCard(item) {
         <h3 class="item-card__name">${item.name}</h3>
         <p class="item-card__desc">${desc}</p>
         <div class="item-card__footer">
-          <a class="item-card__link" href="${linkHref}">Ver plato</a>
+          <button
+            class="item-card__link item-detail-btn"
+            data-item-id="${item._id}"
+            aria-label="Ver detalle de ${item.name}"
+          >
+            Ver plato
+          </button>
           <div class="item-card__dot" title="Disponible ahora"></div>
         </div>
       </div>
@@ -370,7 +379,7 @@ function buildClientCard(client) {
         src="${imageSrc}"
         alt="${client.name}"
         loading="lazy"
-        onerror="this.src='https://picsum.photos/seed/clientfb/400/300'"
+        onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMmMyZjFhIi8+PHRleHQgeD0iNTAlIiB5PSI0NSUiIGZpbGw9IiM4YTdhNmEiIGZvbnQtc2l6ZT0iMTQiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+U2luIGltYWdlbjwvdGV4dD48L3N2Zz4='"
       />
       <div class="client-card__body">
         <h3 class="client-card__name">${client.name}</h3>
@@ -488,7 +497,7 @@ async function openClientModal(card) {
           <img
             src="${imgSrc}"
             alt="${item.name}"
-            onerror="this.src='https://picsum.photos/seed/mfb/64/64'"
+            onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMmMyZjFhIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM4YTdhNmEiIGZvbnQtc2l6ZT0iOCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5OPC90ZXh0Pjwvc3ZnPg=='"
           />
           <div class="modal-item__info">
             <strong>${item.name}</strong>
@@ -517,6 +526,81 @@ function closeClientModal() {
   if (!modal) return;
   modal.classList.add('hidden');
   document.body.style.overflow = '';
+}
+
+// ═══════════════════════════════════════════════
+//  MODAL DE DETALLE DE ITEM
+// ═══════════════════════════════════════════════
+
+/**
+ * Abre el modal de detalle con los datos del item clickeado
+ * @param {string} itemId - _id del item en MongoDB
+ */
+function openItemModal(itemId) {
+  // Buscar el item en el estado local (ya cargado, sin otro fetch)
+  const item = state.allItems.find(i => String(i._id) === String(itemId));
+  if (!item) {
+    showToast('⚠️ No se encontró el plato');
+    return;
+  }
+
+  const modal = document.getElementById('item-modal');
+  if (!modal) return;
+
+  // Imagen
+  const imgEl  = document.getElementById('item-modal-img');
+  const imgSrc  = CUSTOM_ITEM_IMAGE || (item.image && item.image.trim()
+    ? item.image
+    : 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjgwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMmMyZjFhIi8+PHRleHQgeD0iNTAlIiB5PSI0NSUiIGZpbGw9IiM4YTdhNmEiIGZvbnQtc2l6ZT0iMjAiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+SW1hZ2VuIG5vIGRpc3BvbmlibGU8L3RleHQ+PC9zdmc+');
+  imgEl.src = imgSrc;
+  imgEl.alt = item.name;
+  imgEl.onerror = function() {
+    this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjgwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMmMyZjFhIi8+PHRleHQgeD0iNTAlIiB5PSI0NSUiIGZpbGw9IiM4YTdhNmEiIGZvbnQtc2l6ZT0iMjAiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+SW1hZ2VuIG5vIGRpc3BvbmlibGU8L3RleHQ+PC9zdmc+';
+  };
+
+  // Textos
+  document.getElementById('item-modal-category').textContent  = item.category;
+  document.getElementById('item-modal-name').textContent      = item.name;
+  document.getElementById('item-modal-desc').textContent      = item.description || 'Un plato especial de nuestra parrilla.';
+  document.getElementById('item-modal-cat-value').textContent = item.category;
+
+  // Link del botón de consulta (WhatsApp, mail, o el link propio del item)
+  const linkEl  = document.getElementById('item-modal-link');
+  const linkHref = item.link && item.link.trim() && item.link !== '#menu'
+    ? item.link
+    : `mailto:hola@mercosur.com.ar?subject=Consulta sobre: ${encodeURIComponent(item.name)}`;
+  linkEl.href = linkHref;
+
+  // Mostrar
+  modal.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+
+/**
+ * Cierra el modal de detalle de item
+ */
+function closeItemModal() {
+  const modal = document.getElementById('item-modal');
+  if (!modal) return;
+  modal.classList.add('hidden');
+  document.body.style.overflow = '';
+}
+
+/**
+ * Delega el click de los botones "Ver plato" del grid al modal
+ * Se llama cada vez que se re-renderiza el grid
+ */
+function initItemModalDelegation() {
+  const grid = document.getElementById('items-grid');
+  if (!grid) return;
+
+  // Delegation: un solo listener en el grid padre
+  grid.addEventListener('click', (e) => {
+    const btn = e.target.closest('.item-detail-btn');
+    if (!btn) return;
+    const itemId = btn.dataset.itemId;
+    if (itemId) openItemModal(itemId);
+  });
 }
 
 // ═══════════════════════════════════════════════
@@ -703,6 +787,14 @@ async function init() {
 
   // Modal de clientes: cerrar
   document.getElementById('modal-close')?.addEventListener('click', closeClientModal);
+  // Modal de items: cerrar
+  document.getElementById('item-modal-close')?.addEventListener('click', closeItemModal);
+  document.getElementById('item-modal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'item-modal') closeItemModal();
+  });
+
+  // Delegar clicks del grid al modal de item
+  initItemModalDelegation();
   document.getElementById('client-modal')?.addEventListener('click', (e) => {
     // Cerrar si se hace click en el overlay (fuera del box)
     if (e.target.id === 'client-modal') closeClientModal();
@@ -710,9 +802,11 @@ async function init() {
 
   // Cerrar modal con Escape
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeClientModal();
+    if (e.key === 'Escape') {
+      closeClientModal();
+      closeItemModal();
+    }
   });
-
   // Cargar datos desde la API
   await Promise.all([
     loadAndRenderItems(),

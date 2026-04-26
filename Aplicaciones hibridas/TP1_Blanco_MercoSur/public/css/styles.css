@@ -613,19 +613,27 @@ input, select, textarea {
 
 .item-card__img-wrap {
   position: relative;
-  height: 210px;
+  height: 250px;
   overflow: hidden;
+  background: var(--color-dark-mid);
 }
 
 .item-card__img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
+  object-fit: contain;
+  object-position: center;
+  transition: opacity 0.3s ease, transform 0.5s ease;
+  background: var(--color-dark-mid);
+}
+
+.item-card__img.loading {
+  opacity: 0.5;
+  animation: pulse 1.5s ease-in-out infinite;
 }
 
 .item-card:hover .item-card__img {
-  transform: scale(1.07);
+  transform: scale(1.05);
 }
 
 .item-card__category {
@@ -1321,6 +1329,162 @@ input, select, textarea {
 }
 
 /* ═══════════════════════════════════════════
+   MODAL DE DETALLE DE ITEM
+═══════════════════════════════════════════ */
+
+.item-modal-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+  max-width: 780px;
+  border-radius: var(--radius-xl);
+}
+
+/* Imagen lateral izquierda */
+.item-modal-img-wrap {
+  position: relative;
+  min-height: 420px;
+}
+
+.item-modal-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  background: var(--color-dark-mid);
+}
+
+/* Overlay degradado sobre la imagen */
+.item-modal-img-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    transparent 60%,
+    var(--color-dark-card) 100%
+  );
+  pointer-events: none;
+}
+
+.item-modal-category {
+  position: absolute;
+  top: 1.2rem;
+  left: 1.2rem;
+  background: rgba(15, 12, 10, 0.88);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(200, 96, 26, 0.55);
+  color: var(--color-ember-lt);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.85rem;
+  border-radius: 50px;
+  z-index: 2;
+}
+
+/* Contenido derecho */
+.item-modal-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2.5rem 2rem 2.5rem 1.8rem;
+}
+
+.item-modal-desc {
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  line-height: 1.8;
+}
+
+/* Tabla de metadata */
+.item-modal-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin: 0.5rem 0;
+}
+
+.item-modal-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.7rem 1rem;
+  font-size: 0.85rem;
+}
+
+.item-modal-meta-row:not(:last-child) {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.item-modal-meta-label {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.item-modal-meta-value {
+  color: var(--color-cream);
+  font-weight: 500;
+}
+
+.item-modal-available {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #6fcf7a;
+  font-size: 0.85rem;
+}
+
+.item-modal-btn {
+  margin-top: 0.5rem;
+  width: 100%;
+  justify-content: center;
+}
+
+/* Posición del botón cerrar en este modal */
+.item-modal-box .modal-close {
+  z-index: 10;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(15, 12, 10, 0.75);
+  backdrop-filter: blur(6px);
+}
+
+/* ── Responsive del modal de item ─────────── */
+@media (max-width: 640px) {
+  .item-modal-box {
+    grid-template-columns: 1fr;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .item-modal-img-wrap {
+    min-height: 220px;
+    max-height: 260px;
+  }
+
+  .item-modal-img-wrap::after {
+    background: linear-gradient(
+      to bottom,
+      transparent 50%,
+      var(--color-dark-card) 100%
+    );
+  }
+
+  .item-modal-body {
+    padding: 1.5rem;
+  }
+}
+
+/* ═══════════════════════════════════════════
    RESPONSIVE
 ═══════════════════════════════════════════ */
 @media (max-width: 1024px) {
@@ -1437,5 +1601,15 @@ input, select, textarea {
   }
   .modal-box {
     padding: 1.5rem;
+  }
+}
+
+/* ── Animaciones ────────────────────────────── */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.8;
   }
 }
