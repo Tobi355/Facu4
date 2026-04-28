@@ -1746,43 +1746,6 @@ body {
   overflow-x: hidden;
 }
 
-.breadcrumb-wrap {
-  background: var(--color-dark-mid);
-  border-bottom: 1px solid var(--color-border);
-  padding: 0.9rem var(--space-lg);
-  margin-top: 72px;
-}
-
-.breadcrumb-nav {
-  max-width: 1280px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.78rem;
-  color: var(--color-text-muted);
-  flex-wrap: wrap;
-}
-
-.breadcrumb-nav a {
-  color: var(--color-text-muted);
-  text-decoration: none;
-  transition: color var(--trans-fast);
-}
-
-.breadcrumb-nav a:hover {
-  color: var(--color-ember);
-}
-
-.breadcrumb-sep {
-  color: var(--color-border);
-  font-size: 0.7rem;
-}
-
-.breadcrumb-current {
-  color: var(--color-cream);
-}
-
 .page-loading-state {
   display: flex;
   flex-direction: column;
