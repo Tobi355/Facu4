@@ -1,5 +1,6 @@
 import {
   findAllItems,
+  findItemById,
   insertItem,
   updateItemById,
   deleteItemById
@@ -106,6 +107,28 @@ export const deleteItem = async (req, res) => {
     res.status(200).json({ success: true, message: 'Item eliminado correctamente' });
   } catch (error) {
     console.error('Error en deleteItem:', error.message);
+    const status = error.message === 'ID inválido' ? 400 : 500;
+    res.status(status).json({ success: false, message: error.message });
+  }
+};
+
+export const getItemById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({ success: false, message: 'El ID es obligatorio' });
+    }
+
+    const item = await findItemById(id);
+
+    if (!item) {
+      return res.status(404).json({ success: false, message: 'Item no encontrado' });
+    }
+
+    res.status(200).json({ success: true, data: item });
+  } catch (error) {
+    console.error('Error en getItemById:', error.message);
     const status = error.message === 'ID inválido' ? 400 : 500;
     res.status(status).json({ success: false, message: error.message });
   }

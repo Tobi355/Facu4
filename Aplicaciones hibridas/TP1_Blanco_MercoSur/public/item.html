@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="page-title">Plato — Merco Sur</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+    <!-- ════════════════════════════════
+        HEADER
+    ════════════════════════════════ -->
+    <header class="site-header">
+        <div class="header-inner">
+        <a href="/" class="logo-block" style="text-decoration:none">
+            <span class="logo-flame">🔥</span>
+            <div class="logo-text">
+            <span class="logo-main">MERCO SUR</span>
+            <span class="logo-sub">Parrilla Argentina</span>
+            </div>
+        </a>
+        <nav class="main-nav" id="main-nav">
+            <a href="/" class="nav-link">Inicio</a>
+            <a href="/#menu" class="nav-link">Menú</a>
+            <a href="/#nosotros" class="nav-link">Nosotros</a>
+            <a href="/#clientes" class="nav-link">Clientes</a>
+            <a href="/#contacto" class="nav-link">Contacto</a>
+        </nav>
+        <button class="hamburger" id="hamburger" aria-label="Abrir menú">
+            <span></span><span></span><span></span>
+        </button>
+        </div>
+    </header>
+
+    <!-- ════════════════════════════════
+        LOADING STATE
+    ════════════════════════════════ -->
+    <div class="page-loading-state" id="page-loading">
+        <div class="loading-spinner"></div>
+        <p>Cargando el plato...</p>
+    </div>
+
+    <!-- ════════════════════════════════
+        ERROR STATE
+    ════════════════════════════════ -->
+    <div class="page-error-state hidden" id="page-error">
+        <span class="error-emoji">🍽️</span>
+        <h2>Plato no encontrado</h2>
+        <p>El plato que buscás no existe o fue removido del menú. Revisá la carta completa.</p>
+        <a href="/#menu" class="btn btn-primary">Ver el menú completo</a>
+    </div>
+
+    <!-- ════════════════════════════════
+        CONTENIDO PRINCIPAL
+    ════════════════════════════════ -->
+    <main class="hidden" id="page-content">
+        <div class="detail-grid">
+
+        <!-- Columna izquierda: imagen sticky -->
+        <div class="detail-img-col">
+            <div class="detail-img-inner">
+            <img id="detail-img" src="" alt="" />
+            <span class="detail-img-badge hidden" id="detail-badge"></span>
+            </div>
+        </div>
+
+        <!-- Columna derecha: información scrolleable -->
+        <div class="detail-info-col">
+
+            <span class="detail-category-tag" id="detail-category"></span>
+            <h1 class="detail-name" id="detail-name"></h1>
+            <p class="detail-desc" id="detail-desc"></p>
+
+            <!-- Meta: peso, rinde, precio -->
+            <div class="detail-meta-strip" id="detail-meta-strip"></div>
+
+            <!-- Badges dietarios -->
+            <div class="dietary-strip hidden" id="dietary-strip"></div>
+
+            <div class="detail-divider"></div>
+
+            <!-- Selector: punto de cocción (solo carnes) -->
+            <div class="selector-block hidden" id="cooking-block">
+            <p class="selector-title">Punto de cocción</p>
+            <div class="selector-pills" id="cooking-pills"></div>
+            </div>
+
+            <!-- Selector: aderezo / variante / etc -->
+            <div class="selector-block hidden" id="extras-block">
+            <p class="selector-title" id="extras-label-title">Aderezo</p>
+            <div class="selector-pills" id="extras-pills"></div>
+            </div>
+
+            <!-- Detalles adicionales del plato -->
+            <div class="hidden" id="additional-block">
+            <div class="detail-divider"></div>
+            <div class="detail-additional-wrap">
+                <p class="detail-additional-label">📖 Sobre este plato</p>
+                <p class="detail-additional-text" id="detail-additional-text"></p>
+            </div>
+            </div>
+
+            <div class="detail-divider"></div>
+
+            <!-- CTAs -->
+            <div class="detail-ctas">
+            <a class="btn-reservar-main" id="btn-reservar" href="/reserva.html">
+                🔥 Reservar este plato
+            </a>
+            <a class="btn btn-ghost" href="/#menu">← Volver al menú</a>
+            </div>
+
+        </div>
+        </div>
+    </main>
+
+    <!-- ════════════════════════════════
+        FOOTER
+    ════════════════════════════════ -->
+    <footer class="site-footer">
+        <div class="footer-inner">
+        <div class="footer-brand">
+            <span class="logo-main">MERCO SUR</span>
+            <p>La mejor parrilla de barrio,<br />con el alma del sur.</p>
+        </div>
+        <div class="footer-links">
+            <strong>Menú</strong>
+            <a href="/#menu">Parrilla</a>
+            <a href="/#menu">Entrantes</a>
+            <a href="/#menu">Guarniciones</a>
+            <a href="/#menu">Bebidas</a>
+            <a href="/#menu">Postres</a>
+        </div>
+        <div class="footer-links">
+            <strong>Sitio</strong>
+            <a href="/">Inicio</a>
+            <a href="/#nosotros">Nosotros</a>
+            <a href="/#clientes">Clientes</a>
+            <a href="/#contacto">Contacto</a>
+        </div>
+        <div class="footer-social">
+            <strong>Seguinos</strong>
+            <div class="social-links">
+            <a href="#" class="social-btn">📸 Instagram</a>
+            <a href="#" class="social-btn">📘 Facebook</a>
+            <a href="#" class="social-btn">🐦 Twitter / X</a>
+            </div>
+        </div>
+        </div>
+        <div class="footer-bottom">
+        <span>© 2024 Merco Sur. Todos los derechos reservados.</span>
+        <span>Hecho con 🔥 en Buenos Aires</span>
+        </div>
+    </footer>
+
+    <!-- Toast -->
+    <div class="toast hidden" id="toast"></div>
+
+    <!-- ════════════════════════════════
+        JAVASCRIPT
+    ════════════════════════════════ -->
+    <script type="module">
+        const API_BASE = 'http://localhost:3333';
+
+        // Leer ?id= de la URL
+        const urlParams  = new URLSearchParams(window.location.search);
+        const itemId     = urlParams.get('id');
+
+        // Estado de selecciones del usuario
+        const selections = { cooking: null, extras: null };
+
+        // ── Utilidades ───────────────────────────
+        function showToast(message, duration = 3000) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.classList.remove('hidden');
+        clearTimeout(toast._timeout);
+        toast._timeout = setTimeout(() => toast.classList.add('hidden'), duration);
+        }
+
+        function showState(stateId) {
+        ['page-loading', 'page-error', 'page-content'].forEach(id => {
+            document.getElementById(id).classList.toggle('hidden', id !== stateId);
+        });
+        }
+
+        // ── URL del botón reservar (se actualiza al seleccionar opciones) ──
+        function refreshReservarHref() {
+        const btn = document.getElementById('btn-reservar');
+        if (!btn || !itemId) return;
+
+        const url = new URL('/reserva.html', window.location.origin);
+        url.searchParams.set('id', itemId);
+        if (selections.cooking) url.searchParams.set('punto', selections.cooking);
+        if (selections.extras)  url.searchParams.set('extras', selections.extras);
+
+        btn.href = url.toString();
+        }
+
+        // ── Renderizar badges dietarios ──────────
+        function renderDietaryBadges(dietaryInfo) {
+        const strip = document.getElementById('dietary-strip');
+        if (!dietaryInfo) return;
+
+        const badges = [];
+
+        if (dietaryInfo.glutenFree) {
+            badges.push(`<span class="dietary-badge dietary-badge--gf">✓ Sin TACC</span>`);
+        }
+        if (dietaryInfo.lactoseFree) {
+            badges.push(`<span class="dietary-badge dietary-badge--lf">✓ Sin Lactosa</span>`);
+        }
+        if (dietaryInfo.vegan) {
+            badges.push(`<span class="dietary-badge dietary-badge--vegan">✓ Vegano</span>`);
+        } else if (dietaryInfo.vegetarian) {
+            badges.push(`<span class="dietary-badge dietary-badge--veg">✓ Vegetariano</span>`);
+        }
+
+        if (badges.length > 0) {
+            strip.innerHTML = badges.join('');
+            strip.classList.remove('hidden');
+        }
+        }
+
+        // ── Renderizar grupo de pills seleccionables ──
+        function renderSelectorPills(containerId, options, selectionKey, preselected = null) {
+        const container = document.getElementById(containerId);
+        if (!container || !options || options.length === 0) return;
+
+        container.innerHTML = '';
+
+        options.forEach((opt, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'selector-pill';
+            btn.textContent = opt;
+            btn.dataset.value = opt;
+
+            // Preseleccionar si viene por URL o seleccionar el primero por defecto
+            const shouldSelect = preselected ? opt === preselected : i === 0;
+            if (shouldSelect) {
+            btn.classList.add('selected');
+            selections[selectionKey] = opt;
+            refreshReservarHref();
+            }
+
+            btn.addEventListener('click', () => {
+            container.querySelectorAll('.selector-pill').forEach(p => p.classList.remove('selected'));
+            btn.classList.add('selected');
+            selections[selectionKey] = opt;
+            refreshReservarHref();
+            });
+
+            container.appendChild(btn);
+        });
+        }
+
+        // ── Renderizar todo el item ──────────────
+        function renderItem(item) {
+        // Título de página
+        document.title = `${item.name} — Merco Sur`;
+
+        // Imagen principal
+        const img = document.getElementById('detail-img');
+        img.alt   = item.name;
+        img.src   = item.image && item.image.trim()
+            ? item.image
+            : `https://picsum.photos/seed/${item._id}/800/1000`;
+        img.onerror = () => {
+            img.src = `https://picsum.photos/seed/fallback_${item.category || 'food'}/800/1000`;
+        };
+
+        // Badge sobre la imagen
+        if (item.badge) {
+            const badge = document.getElementById('detail-badge');
+            badge.textContent = item.badge;
+            badge.classList.remove('hidden');
+        }
+
+        // Categoría, nombre, descripción
+        document.getElementById('detail-category').textContent = item.category || '';
+        document.getElementById('detail-name').textContent     = item.name || '';
+        document.getElementById('detail-desc').textContent     = item.description || '';
+
+        // Meta strip: peso / rinde / precio
+        const strip = document.getElementById('detail-meta-strip');
+        strip.innerHTML = '';
+
+        const metasConfig = [
+            { emoji: '⚖️',  label: 'Peso / Porción', val: item.weight,   cls: '' },
+            { emoji: '👥',  label: 'Rinde para',      val: item.servings, cls: '' },
+            {
+            emoji: '💰',
+            label: 'Precio',
+            val: item.price ? `$ ${item.price.toLocaleString('es-AR')}` : null,
+            cls: 'price-chip'
+            }
+        ];
+
+        metasConfig.forEach(({ emoji, label, val, cls }) => {
+            if (!val) return;
+            const chip = document.createElement('div');
+            chip.className = `meta-chip ${cls}`.trim();
+            chip.innerHTML = `
+            <span class="meta-emoji">${emoji}</span>
+            <span class="meta-label">${label}</span>
+            <span class="meta-val">${val}</span>
+            `;
+            strip.appendChild(chip);
+        });
+
+        // Badges dietarios
+        renderDietaryBadges(item.dietaryInfo);
+
+        // Selector de punto de cocción (solo si tiene opciones)
+        const cookingPoints = item.cookingPoints || [];
+        if (cookingPoints.length > 0) {
+            document.getElementById('cooking-block').classList.remove('hidden');
+            const preselectedCooking = urlParams.get('punto') || null;
+            renderSelectorPills('cooking-pills', cookingPoints, 'cooking', preselectedCooking);
+        }
+
+        // Selector de extras / aderezo / variante
+        const seasoningOptions = item.seasoningOptions || [];
+        if (seasoningOptions.length > 0) {
+            document.getElementById('extras-block').classList.remove('hidden');
+            document.getElementById('extras-label-title').textContent = item.extrasLabel || 'Aderezo';
+            const preselectedExtras = urlParams.get('extras') || null;
+            renderSelectorPills('extras-pills', seasoningOptions, 'extras', preselectedExtras);
+        }
+
+        // Detalles adicionales
+        if (item.details) {
+            document.getElementById('additional-block').classList.remove('hidden');
+            document.getElementById('detail-additional-text').textContent = item.details;
+        }
+
+        // Actualizar href del botón Reservar
+        refreshReservarHref();
+
+        // Mostrar contenido
+        showState('page-content');
+        }
+
+        // ── Cargar item desde la API ─────────────
+        async function loadItem() {
+        if (!itemId) {
+            showState('page-error');
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_BASE}/items/${itemId}`);
+
+            if (!response.ok) {
+            showState('page-error');
+            return;
+            }
+
+            const data = await response.json();
+
+            if (!data.success || !data.data) {
+            showState('page-error');
+            return;
+            }
+
+            renderItem(data.data);
+
+        } catch (error) {
+            console.error('Error cargando item:', error);
+            showToast('⚠️ No se pudo cargar el plato');
+            showState('page-error');
+        }
+        }
+
+        // ── Menú hamburguesa ─────────────────────
+        function initHamburger() {
+        const btn = document.getElementById('hamburger');
+        const nav = document.getElementById('main-nav');
+        if (!btn || !nav) return;
+
+        btn.addEventListener('click', () => {
+            nav.classList.toggle('open');
+            const spans = btn.querySelectorAll('span');
+            if (nav.classList.contains('open')) {
+            spans[0].style.transform = 'translateY(7px) rotate(45deg)';
+            spans[1].style.opacity   = '0';
+            spans[2].style.transform = 'translateY(-7px) rotate(-45deg)';
+            } else {
+            spans.forEach(s => { s.style.transform = ''; s.style.opacity = ''; });
+            }
+        });
+
+        nav.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+            nav.classList.remove('open');
+            btn.querySelectorAll('span').forEach(s => { s.style.transform = ''; s.style.opacity = ''; });
+            });
+        });
+        }
+
+        // ── Header scroll effect ─────────────────
+        function initHeaderScroll() {
+        const header = document.querySelector('.site-header');
+        if (!header) return;
+        window.addEventListener('scroll', () => {
+            header.style.background = window.scrollY > 60
+            ? 'rgba(10, 8, 7, 0.97)'
+            : 'rgba(15, 12, 10, 0.85)';
+        }, { passive: true });
+        }
+
+        // ── Init ─────────────────────────────────
+        document.addEventListener('DOMContentLoaded', () => {
+        initHamburger();
+        initHeaderScroll();
+        loadItem();
+        });
+    </script>
+</body>
+</html>

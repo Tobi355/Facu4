@@ -69,3 +69,13 @@ export const deleteItemById = async (id) => {
 
     return result;
 };
+
+export const findItemById = async (id) => {
+    const db = getDB();
+
+    if (!ObjectId.isValid(id)) {
+        throw new Error('ID inválido');
+    }
+
+    return await db.collection(COLLECTION).findOne({ _id: new ObjectId(id) });
+};

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import {
     getAllItems,
+    getItemById,
     createItem,
     updateItem,
     deleteItem
@@ -8,13 +9,9 @@ import {
 
 const router = Router();
 
-// GET    /items         → traer todos (con filtros opcionales por query)
-// POST   /items         → crear item
-// PUT    /items/:id     → actualizar item
-// DELETE /items/:id     → eliminar item
-
 router.get('/', getAllItems);
 router.post('/', createItem);
+router.get('/:id', getItemById);
 router.put('/:id', updateItem);
 router.delete('/:id', deleteItem);
 

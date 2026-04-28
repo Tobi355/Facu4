@@ -218,45 +218,80 @@ async function fetchClientItems(clientId) {
  * @param {Object} item - Documento de MongoDB
  * @returns {string} HTML string
  */
-function buildItemCard(item) {
+function buildItemCard(item, index = 0) {
   const imageSrc = CUSTOM_ITEM_IMAGE || (item.image && item.image.trim()
     ? item.image
     : `https://picsum.photos/seed/${item._id}/400/300`);
 
-  // Truncar descripción a 110 caracteres
   const desc = item.description && item.description.length > 110
     ? item.description.substring(0, 110) + '…'
     : (item.description || 'Un plato especial de nuestra parrilla.');
 
-  return `
-    <article class="item-card" data-id="${item._id}">
-      <div class="item-card__img-wrap">
-        <img
-          class="item-card__img loading"
-          src="${imageSrc}"
-          alt="${item.name}"
-          loading="lazy"
-          onload="this.classList.remove('loading')"
-          onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMmMyZjFhIi8+PHRleHQgeD0iNTAlIiB5PSI0NSUiIGZpbGw9IiM4YTdhNmEiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+U2luIGltYWdlbjwvdGV4dD48L3N2Zz4='; this.classList.remove('loading')"
-        />
-        <span class="item-card__category">${item.category}</span>
-      </div>
-      <div class="item-card__body">
-        <h3 class="item-card__name">${item.name}</h3>
-        <p class="item-card__desc">${desc}</p>
-        <div class="item-card__footer">
-          <button
-            class="item-card__link item-detail-btn"
-            data-item-id="${item._id}"
-            aria-label="Ver detalle de ${item.name}"
-          >
-            Ver plato
-          </button>
-          <div class="item-card__dot" title="Disponible ahora"></div>
-        </div>
-      </div>
-    </article>
-  `;
+  // ARTICLE
+  const article = document.createElement('article');
+  article.className = 'item-card';
+  article.style.animationDelay = `${index * 0.07}s`;
+  article.dataset.id = item._id;
+
+  // IMG WRAP
+  const imgWrap = document.createElement('div');
+  imgWrap.className = 'item-card__img-wrap';
+
+  const img = document.createElement('img');
+  img.className = 'item-card__img loading';
+  img.src = imageSrc;
+  img.alt = item.name;
+  img.loading = 'lazy';
+
+  img.onload = () => img.classList.remove('loading');
+  img.onerror = () => {
+    img.src = 'data:image/svg+xml;base64,...';
+    img.classList.remove('loading');
+  };
+
+  const category = document.createElement('span');
+  category.className = 'item-card__category';
+  category.textContent = item.category;
+
+  imgWrap.appendChild(img);
+  imgWrap.appendChild(category);
+
+  // BODY
+  const body = document.createElement('div');
+  body.className = 'item-card__body';
+
+  const title = document.createElement('h3');
+  title.className = 'item-card__name';
+  title.textContent = item.name;
+
+  const paragraph = document.createElement('p');
+  paragraph.className = 'item-card__desc';
+  paragraph.textContent = desc;
+
+  const footer = document.createElement('div');
+  footer.className = 'item-card__footer';
+
+  const btn = document.createElement('button');
+  btn.className = 'item-card__link item-detail-btn';
+  btn.dataset.itemId = item._id;
+  btn.setAttribute('aria-label', `Ver detalle de ${item.name}`);
+  btn.textContent = 'Ver plato';
+
+  const dot = document.createElement('div');
+  dot.className = 'item-card__dot';
+  dot.title = 'Disponible ahora';
+
+  footer.appendChild(btn);
+  footer.appendChild(dot);
+
+  body.appendChild(title);
+  body.appendChild(paragraph);
+  body.appendChild(footer);
+
+  article.appendChild(imgWrap);
+  article.appendChild(body);
+
+  return article;
 }
 
 /**
@@ -270,8 +305,10 @@ function renderItems(items) {
 
   if (!grid) return;
 
+  // limpiar contenido anterior
+  grid.innerHTML = '';
+
   if (items.length === 0) {
-    grid.innerHTML = '';
     emptyState?.classList.remove('hidden');
     if (counter) counter.textContent = '';
     return;
@@ -284,15 +321,11 @@ function renderItems(items) {
     counter.textContent = `${items.length} ${label}`;
   }
 
-  // Añadir animation-delay escalonado por card
-  grid.innerHTML = items.map((item, index) => {
-    const card = buildItemCard(item);
-    // Inyectar delay en el estilo de cada card
-    return card.replace(
-      'class="item-card"',
-      `class="item-card" style="animation-delay: ${index * 0.07}s"`
-    );
-  }).join('');
+  // 👇 clave: crear nodos reales
+  items.forEach((item, index) => {
+    const card = buildItemCard(item, index);
+    grid.appendChild(card);
+  });
 }
 
 /**
@@ -356,7 +389,7 @@ async function loadAndRenderItems() {
  * @param {Object} client - Documento de MongoDB
  * @returns {string} HTML string
  */
-function buildClientCard(client) {
+function buildClientCard(client, index = 0) {
   const imageSrc = client.image && client.image.trim()
     ? client.image
     : `https://picsum.photos/seed/client${client._id}/400/300`;
@@ -365,29 +398,51 @@ function buildClientCard(client) {
     ? client.description.substring(0, 100) + '…'
     : (client.description || 'Cliente frecuente de Merco Sur.');
 
-  return `
-    <div
-      class="client-card"
-      data-client-id="${client._id}"
-      data-client-name="${client.name}"
-      role="button"
-      tabindex="0"
-      title="Ver pedidos de ${client.name}"
-    >
-      <img
-        class="client-card__img"
-        src="${imageSrc}"
-        alt="${client.name}"
-        loading="lazy"
-        onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMmMyZjFhIi8+PHRleHQgeD0iNTAlIiB5PSI0NSUiIGZpbGw9IiM4YTdhNmEiIGZvbnQtc2l6ZT0iMTQiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+U2luIGltYWdlbjwvdGV4dD48L3N2Zz4='"
-      />
-      <div class="client-card__body">
-        <h3 class="client-card__name">${client.name}</h3>
-        <p class="client-card__desc">${desc}</p>
-        <span class="client-card__cta">Ver sus pedidos</span>
-      </div>
-    </div>
-  `;
+  // CARD
+  const card = document.createElement('div');
+  card.className = 'client-card';
+  card.style.animationDelay = `${index * 0.1}s`;
+  card.dataset.clientId = client._id;
+  card.dataset.clientName = client.name;
+  card.setAttribute('role', 'button');
+  card.setAttribute('tabindex', '0');
+  card.title = `Ver pedidos de ${client.name}`;
+
+  // IMG
+  const img = document.createElement('img');
+  img.className = 'client-card__img';
+  img.src = imageSrc;
+  img.alt = client.name;
+  img.loading = 'lazy';
+
+  img.onerror = () => {
+    img.src = 'data:image/svg+xml;base64,...';
+  };
+
+  // BODY
+  const body = document.createElement('div');
+  body.className = 'client-card__body';
+
+  const title = document.createElement('h3');
+  title.className = 'client-card__name';
+  title.textContent = client.name;
+
+  const paragraph = document.createElement('p');
+  paragraph.className = 'client-card__desc';
+  paragraph.textContent = desc;
+
+  const cta = document.createElement('span');
+  cta.className = 'client-card__cta';
+  cta.textContent = 'Ver sus pedidos';
+
+  body.appendChild(title);
+  body.appendChild(paragraph);
+  body.appendChild(cta);
+
+  card.appendChild(img);
+  card.appendChild(body);
+
+  return card;
 }
 
 /**
@@ -407,6 +462,9 @@ async function loadAndRenderClients() {
   try {
     const clients = await fetchClients();
 
+    // limpiar grid
+    grid.innerHTML = '';
+
     if (clients.length === 0) {
       grid.innerHTML = `
         <div class="loading-state">
@@ -417,30 +475,34 @@ async function loadAndRenderClients() {
       return;
     }
 
-    grid.innerHTML = clients.map((client, i) => {
-      const card = buildClientCard(client);
-      return card.replace(
-        'class="client-card"',
-        `class="client-card" style="animation-delay: ${i * 0.1}s"`
-      );
-    }).join('');
+    const fragment = document.createDocumentFragment();
 
-    // Adjuntar listeners a las cards de clientes
-    grid.querySelectorAll('.client-card').forEach(card => {
+    clients.forEach((client, index) => {
+      const card = buildClientCard(client, index);
+
+      // 👇 eventos directamente acá (mejor que después)
       card.addEventListener('click', () => openClientModal(card));
       card.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') openClientModal(card);
+        if (e.key === 'Enter' || e.key === ' ') {
+          openClientModal(card);
+        }
       });
+
+      fragment.appendChild(card);
     });
+
+    grid.appendChild(fragment);
 
   } catch (error) {
     console.error('Error cargando clientes:', error);
+
     grid.innerHTML = `
       <div class="loading-state">
         <span style="font-size:2rem">⚠️</span>
         <p>No se pudieron cargar los clientes.</p>
       </div>
     `;
+
     showToast('⚠️ Error al cargar clientes');
   }
 }
@@ -565,11 +627,28 @@ function openItemModal(itemId) {
   document.getElementById('item-modal-cat-value').textContent = item.category;
 
   // Link del botón de consulta (WhatsApp, mail, o el link propio del item)
-  const linkEl  = document.getElementById('item-modal-link');
+  const reservaBtn = document.getElementById('item-modal-reserva');
+  const detailBtn  = document.getElementById('item-modal-detail');
+
+  // URL con ID
+  const itemIdFromItem = item._id;
+
+  // 👉 Botón reserva
+  if (reservaBtn) {
+    reservaBtn.href = `/reserva.html?id=${itemIdFromItem}`;
+  }
+
+  // 👉 Botón detalle
+  if (detailBtn) {
+    detailBtn.href = `/item.html?id=${itemIdFromItem}`;
+  }
   const linkHref = item.link && item.link.trim() && item.link !== '#menu'
     ? item.link
     : `mailto:hola@mercosur.com.ar?subject=Consulta sobre: ${encodeURIComponent(item.name)}`;
-  linkEl.href = linkHref;
+  const linkEl = document.getElementById('item-modal-link');
+  if (linkEl) {
+    linkEl.href = linkHref;
+  }
 
   // Mostrar
   modal.classList.remove('hidden');
