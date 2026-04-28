@@ -14,14 +14,14 @@ const DB_NAME = process.env.DB_NAME || 'AH20232CP1';
 const clients = [
   {
     name: 'Mesa Familiar',
-    image: 'https://picsum.photos/seed/family1/400/300',
+    image: '/images/clients/familia.jpg',
     description: 'Cliente habitual que reserva para grupos familiares los fines de semana.',
     createdAt: new Date(),
     updatedAt: new Date()
   },
   {
     name: 'Grupo de Amigos',
-    image: 'https://picsum.photos/seed/friends1/400/300',
+    image: '/images/clients/amigos.jpg',
     description: 'Grupo de amigos que viene regularmente los viernes a la noche.',
     createdAt: new Date(),
     updatedAt: new Date()

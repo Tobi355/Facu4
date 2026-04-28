@@ -1,20 +1,12 @@
-// ═══════════════════════════════════════════════
-//  MERCO SUR — Frontend JS
-//  Consume la API REST en localhost:3333
-// ═══════════════════════════════════════════════
-
 const API_BASE = 'http://localhost:3333';
 
-// Si tienes un link propio para usar en todos los items, colócalo aquí.
-// Si prefieres usar un archivo local, descárgalo en public/images y usa '/images/tu-imagen.jpg'.
 const CUSTOM_ITEM_IMAGE = '';
 
-// ── Estado global de la app ──────────────────
 const state = {
-  allItems:       [],
-  activeCategory: '',
-  searchTerm:     '',
-  isLoading:      false
+  allItems:         [],
+  activeCategories: new Set(),
+  searchTerm:       '',
+  isLoading:        false
 };
 
 // ═══════════════════════════════════════════════
@@ -156,9 +148,12 @@ function initScrollSpy() {
 async function fetchItems(filters = {}) {
   const params = new URLSearchParams();
 
-  if (filters.category && filters.category.trim()) {
-    params.append('category', filters.category.trim());
+  // Enviar una entrada ?category= por cada categoría seleccionada
+  // Express las leerá como array en req.query.category
+  if (filters.categories && filters.categories.size > 0) {
+    filters.categories.forEach(cat => params.append('category', cat));
   }
+
   if (filters.name && filters.name.trim()) {
     params.append('name', filters.name.trim());
   }
@@ -207,6 +202,446 @@ async function fetchClientItems(clientId) {
   }
   const data = await response.json();
   return data.data || [];
+}
+
+// ═══════════════════════════════════════════════
+//  RESERVA — PAGE-SPECIFIC
+// ═══════════════════════════════════════════════
+
+const reservationUrlParams = new URLSearchParams(window.location.search);
+const reservationMainItemId = reservationUrlParams.get('id');
+const reservationPrePoint = reservationUrlParams.get('punto');
+const reservationPreExtras = reservationUrlParams.get('extras');
+
+const reservationState = {
+  mainItem: null,
+  extraItems: [],
+  selectedExtras: new Set(),
+  persons: 2
+};
+
+function showState(stateId) {
+  ['page-loading', 'page-error', 'page-content'].forEach(id => {
+    document.getElementById(id)?.classList.toggle('hidden', id !== stateId);
+  });
+}
+
+function generateRequestId() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let id = 'MS-';
+  for (let i = 0; i < 8; i++) {
+    id += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return id;
+}
+
+function formatDate(dateStr, timeStr) {
+  if (!dateStr) return 'Sin fecha asignada';
+  const [year, month, day] = dateStr.split('-').map(Number);
+  const months = [
+    'enero','febrero','marzo','abril','mayo','junio',
+    'julio','agosto','septiembre','octubre','noviembre','diciembre'
+  ];
+  const days = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+  const date = new Date(year, month - 1, day);
+  const dayName = days[date.getDay()];
+  const base = `${dayName.charAt(0).toUpperCase() + dayName.slice(1)} ${day} de ${months[month - 1]} de ${year}`;
+  return timeStr ? `${base} a las ${timeStr}hs` : base;
+}
+
+async function fetchItemById(id) {
+  const response = await fetch(`${API_BASE}/items/${id}`);
+  if (!response.ok) throw new Error('Plato no encontrado');
+  const data = await response.json();
+  if (!data.success || !data.data) throw new Error('Respuesta inválida al cargar plato');
+  return data.data;
+}
+
+async function fetchAllItems() {
+  const response = await fetch(`${API_BASE}/items`);
+  if (!response.ok) throw new Error('Error al cargar el menú');
+  const data = await response.json();
+  return data.data || [];
+}
+
+function renderMainDish(item) {
+  const imgSrc = item.image && item.image.trim()
+    ? item.image
+    : `https://picsum.photos/seed/${item._id}/400/300`;
+
+  const img = document.getElementById('cart-main-img');
+  img.src = imgSrc;
+  img.alt = item.name;
+  img.onerror = () => {
+    img.src = `https://picsum.photos/seed/fallback_${item.category}/400/300`;
+  };
+
+  document.getElementById('cart-main-cat').textContent = item.category || '';
+  document.getElementById('cart-main-name').textContent = item.name || '';
+
+  const desc = item.description
+    ? (item.description.length > 90 ? item.description.slice(0, 90) + '…' : item.description)
+    : '';
+  document.getElementById('cart-main-desc').textContent = desc;
+
+  const metaRow = document.getElementById('cart-main-meta');
+  metaRow.innerHTML = '';
+
+  if (item.weight) {
+    const pill = document.createElement('span');
+    pill.className = 'meta-pill-sm';
+    pill.innerHTML = `⚖️ ${item.weight}`;
+    metaRow.appendChild(pill);
+  }
+
+  if (item.servings) {
+    const pill = document.createElement('span');
+    pill.className = 'meta-pill-sm';
+    pill.innerHTML = `👥 ${item.servings}`;
+    metaRow.appendChild(pill);
+  }
+
+  if (item.price) {
+    const pill = document.createElement('span');
+    pill.className = 'meta-pill-sm meta-pill-sm--price';
+    pill.innerHTML = `💰 $${item.price.toLocaleString('es-AR')}`;
+    metaRow.appendChild(pill);
+  }
+
+  const optsRow = document.getElementById('cart-selected-opts');
+  optsRow.innerHTML = '';
+
+  if (reservationPrePoint || reservationPreExtras) {
+    optsRow.classList.remove('hidden');
+    if (reservationPrePoint) {
+      const tag = document.createElement('span');
+      tag.className = 'selected-opt-tag';
+      tag.textContent = `🔥 ${reservationPrePoint}`;
+      optsRow.appendChild(tag);
+    }
+    if (reservationPreExtras) {
+      const tag = document.createElement('span');
+      tag.className = 'selected-opt-tag';
+      tag.textContent = `🫙 ${reservationPreExtras}`;
+      optsRow.appendChild(tag);
+    }
+  } else {
+    optsRow.classList.add('hidden');
+  }
+}
+
+function renderExtrasList(items, filterTerm = '') {
+  const container = document.getElementById('extras-list');
+  if (!container) return;
+
+  const filtered = items.filter(item => {
+    if (String(item._id) === String(reservationMainItemId)) return false;
+    if (!filterTerm.trim()) return true;
+    return item.name.toLowerCase().includes(filterTerm.toLowerCase()) ||
+      item.category.toLowerCase().includes(filterTerm.toLowerCase());
+  });
+
+  container.innerHTML = '';
+
+  if (filtered.length === 0) {
+    const msg = document.createElement('p');
+    msg.className = 'empty-state-text';
+    msg.textContent = filterTerm ? 'No hay platos que coincidan.' : 'No hay otros platos disponibles.';
+    container.appendChild(msg);
+    return;
+  }
+
+  filtered.forEach(item => {
+    const isSelected = reservationState.selectedExtras.has(String(item._id));
+
+    const el = document.createElement('div');
+    el.className = `extras-list-item${isSelected ? ' selected-extra' : ''}`;
+    el.dataset.itemId = item._id;
+
+    const imgSrc = item.image && item.image.trim()
+      ? item.image
+      : `https://picsum.photos/seed/${item._id}/48/48`;
+
+    const img = document.createElement('img');
+    img.src = imgSrc;
+    img.alt = item.name;
+    img.onerror = () => { img.src = `https://picsum.photos/seed/fallback/48/48`; };
+
+    const info = document.createElement('div');
+    info.className = 'extras-list-item-info';
+    info.innerHTML = `
+      <div class="extras-list-item-name">${item.name}</div>
+      <div class="extras-list-item-cat">${item.category}${item.weight ? ` · ${item.weight}` : ''}</div>
+    `;
+
+    const check = document.createElement('div');
+    check.className = 'extras-check';
+    check.textContent = '✓';
+
+    el.appendChild(img);
+    el.appendChild(info);
+    el.appendChild(check);
+
+    el.addEventListener('click', () => toggleExtra(item, el, check));
+    container.appendChild(el);
+  });
+}
+
+function toggleExtra(item, el, check) {
+  const id = String(item._id);
+
+  if (reservationState.selectedExtras.has(id)) {
+    reservationState.selectedExtras.delete(id);
+    el.classList.remove('selected-extra');
+    check.textContent = '';
+  } else {
+    reservationState.selectedExtras.add(id);
+    el.classList.add('selected-extra');
+    check.textContent = '✓';
+  }
+
+  updateExtrasCountBadge();
+  updateCartSummary();
+}
+
+function updateExtrasCountBadge() {
+  const badge = document.getElementById('extras-count-badge');
+  const count = reservationState.selectedExtras.size;
+  if (!badge) return;
+  if (count > 0) {
+    badge.textContent = count;
+    badge.classList.remove('hidden');
+  } else {
+    badge.classList.add('hidden');
+  }
+}
+
+function updateCartSummary() {
+  const wrap = document.getElementById('cart-summary-wrap');
+  const list = document.getElementById('cart-summary-list');
+  if (!wrap || !list) return;
+
+  if (reservationState.selectedExtras.size === 0) {
+    wrap.classList.add('hidden');
+    return;
+  }
+
+  wrap.classList.remove('hidden');
+  list.innerHTML = '';
+
+  const mainRow = document.createElement('div');
+  mainRow.className = 'cart-summary-row';
+  mainRow.innerHTML = `
+    <span class="cart-summary-main-label">🔥 ${reservationState.mainItem ? reservationState.mainItem.name : 'Plato principal'}</span>
+    <span class="cart-summary-note">Principal</span>
+  `;
+  list.appendChild(mainRow);
+
+  reservationState.selectedExtras.forEach(id => {
+    const item = reservationState.extraItems.find(i => String(i._id) === id);
+    if (!item) return;
+
+    const row = document.createElement('div');
+    row.className = 'cart-summary-row';
+    row.innerHTML = `
+      <span class="cart-summary-item-name">${item.name}</span>
+      <button class="cart-remove-btn" data-remove-id="${id}" title="Quitar">✕</button>
+    `;
+
+    row.querySelector('.cart-remove-btn')?.addEventListener('click', () => {
+      reservationState.selectedExtras.delete(id);
+      const listEl = document.querySelector(`.extras-list-item[data-item-id="${id}"]`);
+      if (listEl) {
+        listEl.classList.remove('selected-extra');
+        const check = listEl.querySelector('.extras-check');
+        if (check) check.textContent = '';
+      }
+      updateExtrasCountBadge();
+      updateCartSummary();
+    });
+
+    list.appendChild(row);
+  });
+}
+
+function initPersonsCounter() {
+  const display  = document.getElementById('counter-num');
+  const btnMinus = document.getElementById('btn-minus');
+  const btnPlus  = document.getElementById('btn-plus');
+  if (!display || !btnMinus || !btnPlus) return;
+
+  const MIN = 1;
+  const MAX = 30;
+
+  function update() {
+    display.textContent = reservationState.persons;
+    btnMinus.disabled = reservationState.persons <= MIN;
+    btnPlus.disabled = reservationState.persons >= MAX;
+  }
+
+  btnMinus.addEventListener('click', () => {
+    if (reservationState.persons > MIN) {
+      reservationState.persons -= 1;
+      update();
+    }
+  });
+
+  btnPlus.addEventListener('click', () => {
+    if (reservationState.persons < MAX) {
+      reservationState.persons += 1;
+      update();
+    }
+  });
+
+  update();
+}
+
+function setDefaultDate() {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const iso = tomorrow.toISOString().slice(0, 10);
+  const fFecha = document.getElementById('f-fecha');
+  if (fFecha) {
+    fFecha.value = iso;
+    fFecha.min = iso;
+  }
+  const fHora = document.getElementById('f-hora');
+  if (fHora) {
+    fHora.value = '13:00';
+  }
+}
+
+function initForm() {
+  const form = document.getElementById('reserva-form');
+  const checkbox = document.getElementById('f-confirm');
+  const btnSubmit = document.getElementById('btn-submit');
+  if (!form || !checkbox || !btnSubmit) return;
+
+  checkbox.addEventListener('change', () => {
+    btnSubmit.disabled = !checkbox.checked;
+  });
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const nombre = document.getElementById('f-nombre')?.value.trim() || '';
+    const apellido = document.getElementById('f-apellido')?.value.trim() || '';
+    const email = document.getElementById('f-email')?.value.trim() || '';
+    const fecha = document.getElementById('f-fecha')?.value || '';
+    const hora = document.getElementById('f-hora')?.value || '';
+
+    let hasError = false;
+    const required = [
+      { id: 'f-nombre', val: nombre },
+      { id: 'f-apellido', val: apellido },
+      { id: 'f-email', val: email },
+      { id: 'f-fecha', val: fecha }
+    ];
+
+    required.forEach(({ id, val }) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (!val) {
+        el.classList.add('input-error');
+        hasError = true;
+      } else {
+        el.classList.remove('input-error');
+      }
+    });
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (email && !emailRegex.test(email)) {
+      document.getElementById('f-email')?.classList.add('input-error');
+      hasError = true;
+    }
+
+    if (hasError) {
+      showToast('⚠️ Completá todos los campos obligatorios.');
+      return;
+    }
+
+    btnSubmit.disabled = true;
+    btnSubmit.innerHTML = `
+      <div class="btn-spinner"></div>
+      Enviando...
+    `;
+
+    await new Promise(resolve => setTimeout(resolve, 1400));
+
+    const platosSeleccionados = [];
+    if (reservationState.mainItem) {
+      platosSeleccionados.push(reservationState.mainItem.name);
+    }
+    reservationState.selectedExtras.forEach(id => {
+      const item = reservationState.extraItems.find(i => String(i._id) === id);
+      if (item) platosSeleccionados.push(item.name);
+    });
+
+    document.getElementById('sc-nombre').textContent = `${nombre} ${apellido}`;
+    document.getElementById('sc-email').textContent = email;
+    document.getElementById('sc-datetime').textContent = formatDate(fecha, hora);
+    document.getElementById('sc-personas').textContent = `${reservationState.persons} persona${reservationState.persons > 1 ? 's' : ''}`;
+    document.getElementById('sc-platos').textContent = platosSeleccionados.join(', ') || 'Sin especificar';
+    document.getElementById('sc-id').textContent = generateRequestId();
+
+    form.classList.add('hidden');
+    document.getElementById('reserva-success')?.classList.remove('hidden');
+
+    document.getElementById('reserva-success')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    showToast('✅ ¡Reserva enviada con éxito!', 4000);
+  });
+
+  ['f-nombre', 'f-apellido', 'f-email', 'f-fecha'].forEach(id => {
+    document.getElementById(id)?.addEventListener('input', () => {
+      document.getElementById(id)?.classList.remove('input-error');
+    });
+  });
+}
+
+function initExtrasSearch() {
+  const input = document.getElementById('extras-search');
+  if (!input) return;
+  let debounce;
+
+  input.addEventListener('input', () => {
+    clearTimeout(debounce);
+    debounce = setTimeout(() => {
+      renderExtrasList(reservationState.extraItems, input.value);
+    }, 250);
+  });
+}
+
+async function initReservationPage() {
+  initHamburger();
+  initHeaderScroll();
+
+  if (!reservationMainItemId) {
+    showState('page-error');
+    return;
+  }
+
+  try {
+    const [mainItem, allItems] = await Promise.all([
+      fetchItemById(reservationMainItemId),
+      fetchAllItems()
+    ]);
+
+    reservationState.mainItem = mainItem;
+    reservationState.extraItems = allItems;
+
+    renderMainDish(mainItem);
+    renderExtrasList(allItems);
+    initPersonsCounter();
+    setDefaultDate();
+    initForm();
+    initExtrasSearch();
+
+    showState('page-content');
+  } catch (error) {
+    console.error('Error iniciando reserva:', error);
+    showToast('⚠️ No se pudo cargar la información');
+    showState('page-error');
+  }
 }
 
 // ═══════════════════════════════════════════════
@@ -357,8 +792,8 @@ async function loadAndRenderItems() {
 
   try {
     const items = await fetchItems({
-      category: state.activeCategory,
-      name:     state.searchTerm
+      categories: state.activeCategories,
+      name:       state.searchTerm
     });
 
     state.allItems = items;
@@ -693,18 +1128,43 @@ function initCategoryFilters() {
   const filterContainer = document.getElementById('category-filters');
   if (!filterContainer) return;
 
+  const todosBtn = filterContainer.querySelector('.filter-btn[data-category=""]');
+
   filterContainer.addEventListener('click', (e) => {
     const btn = e.target.closest('.filter-btn');
     if (!btn) return;
 
-    // Actualizar estado visual
-    filterContainer.querySelectorAll('.filter-btn').forEach(b => {
-      b.classList.remove('active');
-    });
-    btn.classList.add('active');
+    const category = btn.dataset.category;
 
-    // Actualizar estado y recargar
-    state.activeCategory = btn.dataset.category || '';
+    // ── Click en "Todos" ──────────────────────────────────────
+    if (category === '') {
+      // Limpiar todas las selecciones y marcar solo "Todos"
+      state.activeCategories.clear();
+      filterContainer.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      loadAndRenderItems();
+      return;
+    }
+
+    // ── Click en una categoría específica ─────────────────────
+    if (state.activeCategories.has(category)) {
+      // Ya estaba seleccionada → deseleccionar
+      state.activeCategories.delete(category);
+      btn.classList.remove('active');
+    } else {
+      // No estaba → agregar a la selección
+      state.activeCategories.add(category);
+      btn.classList.add('active');
+    }
+
+    // Si quedan categorías seleccionadas, desactivar "Todos"
+    // Si no queda ninguna, activar "Todos" automáticamente
+    if (state.activeCategories.size > 0) {
+      todosBtn?.classList.remove('active');
+    } else {
+      todosBtn?.classList.add('active');
+    }
+
     loadAndRenderItems();
   });
 }
@@ -886,11 +1346,16 @@ async function init() {
       closeItemModal();
     }
   });
+
   // Cargar datos desde la API
   await Promise.all([
     loadAndRenderItems(),
     loadAndRenderClients()
   ]);
+
+  if (document.getElementById('reserva-form')) {
+    await initReservationPage();
+  }
 }
 
 // Arrancar cuando el DOM esté listo

@@ -1,3 +1,0 @@
-filtrar por 2 campos(parrilla y bebidas por ej)
-Relación cliente → producto? no entiendo si cada producto solo lo puede tener un cliente 
-validar en post a la db que tenga nombre, imagen, link, etc
