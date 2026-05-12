@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Panel de administración - WhiteRoad">
+  <title>Admin Panel - WhiteRoad</title>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+  
+  <header>
+    <div class="header-container">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">WR</div>
+        <span class="logo-text">White<span>Road</span></span>
+      </a>
+      <div class="menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="servicios.html">Servicios</a></li>
+          <li><a href="nosotros.html">Nosotros</a></li>
+          <li><a href="contacto.html">Contacto</a></li>
+          <li class="nav-admin hidden"><a href="admin-login.html">Admin</a></li>
+          <li class="nav-user-container hidden"></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  
+  <main>
+    <section class="container">
+      <div class="section-header">
+        <h2>Panel de <span>Administración</span></h2>
+        <p>Gestioná servicios, categorías y usuarios</p>
+      </div>
+
+      <div class="admin-container">
+        
+        <aside class="admin-sidebar">
+          <ul class="admin-menu">
+            <li><a href="#" class="active" data-seccion="dashboard"><span class="dropdown-icon">📊</span> Dashboard</a></li>
+            <li><a href="#" data-seccion="servicios"><span class="dropdown-icon">🔧</span> Servicios</a></li>
+            <li><a href="#" data-seccion="categorias"><span class="dropdown-icon">📁</span> Categorías</a></li>
+            <li><a href="#" data-seccion="usuarios"><span class="dropdown-icon">👥</span> Usuarios</a></li>
+            <li><a href="#" data-seccion="reservas"><span class="dropdown-icon">📅</span> Reservas</a></li>
+            <li><a href="#" id="btn-logout-admin"><span class="dropdown-icon">🚪</span> Cerrar Sesión</a></li>
+          </ul>
+        </aside>
+
+        
+        <div class="admin-content">
+          
+          <div id="seccion-dashboard">
+            <div class="dashboard-stats">
+              <div class="stat-card fade-in">
+                <h3>Total Usuarios</h3>
+                <div class="stat-value" id="stat-usuarios">0</div>
+              </div>
+              <div class="stat-card fade-in">
+                <h3>Servicios Activos</h3>
+                <div class="stat-value" id="stat-servicios">0</div>
+              </div>
+              <div class="stat-card fade-in">
+                <h3>Reservas Totales</h3>
+                <div class="stat-value" id="stat-reservas">0</div>
+              </div>
+              <div class="stat-card fade-in">
+                <h3>Categorías</h3>
+                <div class="stat-value" id="stat-categorias">0</div>
+              </div>
+              <div class="stat-card fade-in">
+                <h3>Mensajes</h3>
+                <div class="stat-value" id="stat-contactos">0</div>
+              </div>
+            </div>
+
+            <h3 class="mb-2">Reservas Recientes</h3>
+            <div id="reservas-recientes">
+              
+            </div>
+
+            <h3 class="mb-2">Mensajes de Contacto</h3>
+            <div id="contactos-recientes">
+              
+            </div>
+          </div>
+
+          
+          <div id="seccion-servicios" class="hidden">
+            <div class="admin-header">
+              <h3>Gestión de Servicios</h3>
+              <div class="admin-actions">
+                <button class="btn btn-primary btn-small" id="btn-nuevo-servicio">+ Nuevo Servicio</button>
+              </div>
+            </div>
+            <div id="servicios-listado">
+              
+            </div>
+          </div>
+
+          
+          <div id="seccion-categorias" class="hidden">
+            <div class="admin-header">
+              <h3>Gestión de Categorías</h3>
+              <div class="admin-actions">
+                <button class="btn btn-primary btn-small" id="btn-nueva-categoria">+ Nueva Categoría</button>
+              </div>
+            </div>
+            <div id="categorias-listado">
+              
+            </div>
+          </div>
+
+          
+          <div id="seccion-usuarios" class="hidden">
+            <div class="admin-header">
+              <h3>Gestión de Usuarios</h3>
+            </div>
+            <div id="usuarios-listado">
+              
+            </div>
+          </div>
+
+          
+          <div id="seccion-reservas" class="hidden">
+            <div class="admin-header">
+              <h3>Gestión de Reservas</h3>
+            </div>
+            <div id="reservas-listado">
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  
+  <footer>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>WhiteRoad</h3>
+        <p>Tu taller de confianza para el mantenimiento y reparación de motocicletas.</p>
+        <p>📍 Av. Siempre Viva 1234</p>
+        <p>📞 (011) 4567-8901</p>
+        <p>✉️ info@whiteroad.com</p>
+      </div>
+      <div class="footer-section">
+        <h3>Enlaces</h3>
+        <ul>
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="servicios.html">Servicios</a></li>
+          <li><a href="nosotros.html">Nosotros</a></li>
+          <li><a href="contacto.html">Contacto</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Horarios</h3>
+        <p>Lunes a Viernes: 8:00 - 18:00</p>
+        <p>Sábados: 9:00 - 13:00</p>
+        <p>Domingos: Cerrado</p>
+      </div>
+      <div class="footer-section footer-student">
+        <h3>Alumno</h3>
+        <p><strong>Nombre:</strong> Tobias Blanco</p>
+        <p><strong>Edad:</strong> 21 años</p>
+        <p><strong>Email:</strong> tobias.blanco@davinci.edu.ar</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 WhiteRoad - Taller de Motos. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  
+  <script src="../js/storage.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/servicios.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Iniciá sesión en WhiteRoad">
+  <title>Login - WhiteRoad</title>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+  
+  <header>
+    <div class="header-container">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">WR</div>
+        <span class="logo-text">White<span>Road</span></span>
+      </a>
+      <div class="menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="servicios.html">Servicios</a></li>
+          <li><a href="nosotros.html">Nosotros</a></li>
+          <li><a href="contacto.html">Contacto</a></li>
+          <li class="nav-admin hidden"><a href="admin-login.html">Admin</a></li>
+          <li class="nav-user-container hidden"></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  
+  <main>
+    <section class="container">
+      <div class="section-header">
+        <h2>Acceso de <span>Usuarios</span></h2>
+        <p>Iniciá sesión o creá tu cuenta</p>
+      </div>
+
+      <div class="auth-container">
+        
+        <div class="auth-card">
+          <h3>Iniciar Sesión</h3>
+          <form id="form-login">
+            <div class="form-group">
+              <label for="login-email">Email</label>
+              <input type="email" id="login-email" name="email" required placeholder="tu@email.com">
+            </div>
+            <div class="form-group">
+              <label for="login-password">Contraseña</label>
+              <input type="password" id="login-password" name="password" required placeholder="Tu contraseña">
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
+          </form>
+          <div class="alert alert-info mt-3">
+            <strong>Atención:</strong> El acceso de administrador no se realiza desde este formulario. Utilizá el botón "Admin" en la barra de navegación o la página de <a href="admin-login.html">login de administradores</a>.
+          </div>
+          <div class="auth-divider">
+            <span>o</span>
+          </div>
+          <p class="text-center">
+            <a href="registro.html" class="text-red">¿No tenés cuenta? Registrate</a>
+          </p>
+        </div>
+
+        
+        <div class="auth-card">
+          <h3>¿Primera vez?</h3>
+          <p class="text-center mb-2">Creá tu cuenta para:</p>
+          <ul style="color: var(--gris-claro); margin-bottom: 1.5rem; padding-left: 1.5rem;">
+            <li class="mb-1">Reservar turnos online</li>
+            <li class="mb-1">Ver el historial de servicios</li>
+            <li class="mb-1">Gestionar tus reservas</li>
+            <li class="mb-1">Recibir notificaciones</li>
+          </ul>
+          <a href="registro.html" class="btn btn-secondary btn-block">Crear Cuenta</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  
+  <footer>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>WhiteRoad</h3>
+        <p>Tu taller de confianza para el mantenimiento y reparación de motocicletas.</p>
+        <p>📍 Av. Siempre Viva 1234</p>
+        <p>📞 (011) 4567-8901</p>
+        <p>✉️ info@whiteroad.com</p>
+      </div>
+      <div class="footer-section">
+        <h3>Enlaces</h3>
+        <ul>
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="servicios.html">Servicios</a></li>
+          <li><a href="nosotros.html">Nosotros</a></li>
+          <li><a href="contacto.html">Contacto</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Horarios</h3>
+        <p>Lunes a Viernes: 8:00 - 18:00</p>
+        <p>Sábados: 9:00 - 13:00</p>
+        <p>Domingos: Cerrado</p>
+      </div>
+      <div class="footer-section footer-student">
+        <h3>Alumno</h3>
+        <p><strong>Nombre:</strong> Tobias Blanco</p>
+        <p><strong>Edad:</strong> 21 años</p>
+        <p><strong>Email:</strong> tobias.blanco@davinci.edu.ar</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 WhiteRoad - Taller de Motos. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  
+  <script src="../js/storage.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/servicios.js"></script>
+  <script src="../js/ui.js"></script>
+</body>
+</html>
