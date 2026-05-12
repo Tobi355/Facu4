@@ -1,5 +1,0 @@
-preguntas sobre el tp1 para el profe:
-
-al hacer click en los filtros mer tiene que llevar a una pagina nueva o con que se filtre en la misma ya esta?
-los items tienen que tener tecnologias por ejemplo o era un ejemplo en la consigna?
-esta mal que sea mayormente onepage?
