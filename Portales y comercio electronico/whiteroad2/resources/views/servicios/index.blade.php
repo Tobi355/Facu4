@@ -14,7 +14,7 @@
     <div class="filters">
 
         <a href="{{ route('servicios.index') }}"
-           class="filter-btn">
+           class="filter-btn {{ empty($query) ? 'active' : '' }}">
 
             Todas
 
@@ -22,8 +22,8 @@
 
         @foreach($categorias as $categoria)
 
-            <a href="#"
-               class="filter-btn">
+            <a href="{{ route('servicios.index', ['categoria' => $categoria->id]) }}"
+               class="filter-btn {{ isset($query) && $query == $categoria->id ? 'active' : '' }}">
 
                 {{ $categoria->nombre }}
 
@@ -39,10 +39,18 @@
 
             <article class="service-card">
 
-                <img
-                    src="{{ asset('images/' . $servicio->imagen) }}"
-                    alt="{{ $servicio->nombre }}"
-                >
+                @php
+                    $imgPath = public_path('images/' . ($servicio->imagen ?? ''));
+                @endphp
+
+                @if(!empty($servicio->imagen) && file_exists($imgPath))
+                    <img
+                        src="{{ asset('images/' . $servicio->imagen) }}"
+                        alt="{{ $servicio->nombre }}"
+                    >
+                @else
+                    <div class="card-image">🔧</div>
+                @endif
 
                 <div class="service-content">
 

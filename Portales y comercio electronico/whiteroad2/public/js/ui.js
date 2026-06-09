@@ -1,10 +1,10 @@
 
 
 const UI = {
-  
+
   toastContainer: null,
 
-  
+
   init() {
     this.initMobileMenu();
     this.initToastContainer();
@@ -14,14 +14,14 @@ const UI = {
     this.initScrollAnimations();
   },
 
-  
+
   disableNativeFormValidation() {
     document.querySelectorAll('form').forEach(form => {
       form.noValidate = true;
     });
   },
 
-  
+
   initMobileMenu() {
     const toggle = document.querySelector('.menu-toggle');
     const navUl = document.querySelector('nav ul');
@@ -29,11 +29,28 @@ const UI = {
     if (toggle && navUl) {
       toggle.addEventListener('click', () => {
         navUl.classList.toggle('active');
+        toggle.classList.toggle('active');
+      });
+
+      // Close menu when clicking on a link
+      navUl.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          navUl.classList.remove('active');
+          toggle.classList.remove('active');
+        });
+      });
+
+      // Close menu when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('header')) {
+          navUl.classList.remove('active');
+          toggle.classList.remove('active');
+        }
       });
     }
   },
 
-  
+
   initToastContainer() {
     this.toastContainer = document.createElement('div');
     this.toastContainer.id = 'toast-container';
@@ -41,7 +58,7 @@ const UI = {
     document.body.appendChild(this.toastContainer);
   },
 
-  
+
   initUserDropdown() {
 
     document.addEventListener('click', (e) => {
@@ -54,7 +71,7 @@ const UI = {
     });
   },
 
-  
+
   updateNavAuth() {
     const session = Storage.get(Storage.KEYS.SESSION);
     const userContainer = document.querySelector('.nav-user-container');
@@ -73,11 +90,11 @@ const UI = {
           <span class="nav-user-arrow">▼</span>
         </button>
         <div class="nav-user-dropdown" id="nav-user-dropdown">
-          <a href="perfil.html">
+          <a href="/perfil">
             <span class="dropdown-icon">👤</span>
             <span>Mi Perfil</span>
           </a>
-          <a href="servicios.html">
+          <a href="/servicios">
             <span class="dropdown-icon">📋</span>
             <span>Mis Servicios</span>
           </a>
@@ -118,14 +135,14 @@ const UI = {
     } else {
 
       userContainer.innerHTML = `
-        <a href="login.html" class="nav-btn">Ingresar</a>
+        <a href="/login" class="nav-btn">Ingresar</a>
       `;
       userContainer.classList.remove('hidden');
       adminLinks.forEach(el => el.classList.remove('hidden'));
     }
   },
 
-  
+
   toast(message, type = 'info', duration = 4000) {
     const toast = document.createElement('div');
     toast.className = `toast toast-${type}`;
@@ -154,22 +171,22 @@ const UI = {
     }, duration);
   },
 
-  
+
   success(message, duration = 3000) {
     this.toast(message, 'success', duration);
   },
 
-  
+
   error(message, duration = 4000) {
     this.toast(message, 'error', duration);
   },
 
-  
+
   info(message, duration = 3000) {
     this.toast(message, 'info', duration);
   },
 
-  
+
   showConfirmModal(title, message, onConfirm, onCancel) {
     const overlay = document.createElement('div');
     overlay.className = 'modal-overlay active';
@@ -243,7 +260,7 @@ const UI = {
     });
   },
 
-  
+
   showInfoModal(title, content, onClose) {
     const overlay = document.createElement('div');
     overlay.className = 'modal-overlay active';
@@ -300,14 +317,14 @@ const UI = {
     });
   },
 
-  
+
   closeModal(overlay, onClose) {
     overlay.classList.remove('active');
     setTimeout(() => overlay.remove(), 300);
     if (onClose) onClose();
   },
 
-  
+
   createServiceCard(servicio) {
     const card = document.createElement('article');
     card.className = 'card fade-in';
@@ -351,7 +368,7 @@ const UI = {
 
     const btn = document.createElement('a');
     btn.className = 'btn btn-primary btn-block';
-    btn.href = `detalle.html?id=${servicio.id}`;
+    btn.href = `/servicios/${servicio.id}`;
     btn.textContent = 'Ver detalle';
     content.appendChild(btn);
 
@@ -359,14 +376,14 @@ const UI = {
     return card;
   },
 
-  
+
   truncateText(text, maxLength) {
     if (!text) return '';
     if (text.length <= maxLength) return text;
     return text.substring(0, maxLength) + '...';
   },
 
-  
+
   renderServices(containerSelector, servicios) {
     const container = document.querySelector(containerSelector);
     if (!container) return;
@@ -389,7 +406,7 @@ const UI = {
     this.checkScrollAnimations();
   },
 
-  
+
   renderCategoriasOptions(selectSelector, includeAll = false) {
     const select = document.querySelector(selectSelector);
     if (!select) return;
@@ -412,13 +429,13 @@ const UI = {
     });
   },
 
-  
+
   getUrlParam(param) {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(param);
   },
 
-  
+
   formatDate(dateString) {
     const date = new Date(dateString);
     return date.toLocaleDateString('es-AR', {
@@ -428,7 +445,7 @@ const UI = {
     });
   },
 
-  
+
   formatTime(dateString) {
     const date = new Date(dateString);
     return date.toLocaleTimeString('es-AR', {
@@ -437,7 +454,7 @@ const UI = {
     });
   },
 
-  
+
   validateForm(form, rules) {
     const errors = [];
     const formData = new FormData(form);
@@ -464,7 +481,7 @@ const UI = {
     return errors;
   },
 
-  
+
   showFormErrors(form, errors) {
 
     form.querySelectorAll('.form-error').forEach(el => el.remove());
@@ -482,14 +499,14 @@ const UI = {
     });
   },
 
-  
+
   clearForm(form) {
     form.reset();
     form.querySelectorAll('.form-error').forEach(el => el.remove());
     form.querySelectorAll('.form-group.error').forEach(el => el.classList.remove('error'));
   },
 
-  
+
   renderReservasTable(containerSelector, reservas) {
     const container = document.querySelector(containerSelector);
     if (!container) return;
@@ -584,13 +601,13 @@ const UI = {
     container.appendChild(wrapper);
   },
 
-  
+
   initScrollAnimations() {
     this.checkScrollAnimations();
     window.addEventListener('scroll', () => this.checkScrollAnimations());
   },
 
-  
+
   checkScrollAnimations() {
     const elements = document.querySelectorAll('.fade-in');
     const triggerBottom = window.innerHeight * 0.85;
@@ -603,7 +620,7 @@ const UI = {
     });
   },
 
-  
+
   initIndex() {
     const container = document.getElementById('servicios-destacados');
     const destacados = Servicios.getDestacados();
@@ -620,7 +637,7 @@ const UI = {
     }
   },
 
-  
+
   initLogin() {
 
     if (Auth.redirectIfAuthenticated()) {
@@ -639,7 +656,7 @@ const UI = {
       if (result.success) {
         UI.success(result.message + ', ' + (result.user ? result.user.nombre : 'Administrador'));
         setTimeout(() => {
-          window.location.href = result.redirectUrl || (result.user ? 'perfil.html' : 'admin.html');
+          window.location.href = result.redirectUrl || (result.user ? '/perfil' : '/admin');
         }, 1000);
       } else {
         UI.error(result.message);
@@ -647,7 +664,7 @@ const UI = {
     });
   },
 
-  
+
   initServicios() {
     const grid = document.getElementById('servicios-grid');
     const filtrosContainer = document.getElementById('filtros-categorias');
@@ -703,7 +720,7 @@ const UI = {
     }
   },
 
-  
+
   initAdmin() {
 
     if (!Auth.requireAdmin()) {
@@ -713,7 +730,7 @@ const UI = {
     Admin.init();
   },
 
-  
+
   initPerfil() {
 
     if (!Auth.requireAuth()) {
@@ -721,7 +738,7 @@ const UI = {
     }
 
     if (Auth.isAdmin()) {
-      window.location.href = 'admin.html';
+      window.location.href = '/admin';
       return;
     }
 
@@ -809,7 +826,7 @@ const UI = {
     }
   },
 
-  
+
   initRegistro() {
 
     if (Auth.redirectIfAuthenticated()) {
@@ -841,7 +858,7 @@ const UI = {
       if (result.success) {
         UI.success('Registro exitoso. ¡Bienvenido!');
         setTimeout(() => {
-          window.location.href = 'perfil.html';
+          window.location.href = '/perfil';
         }, 1500);
       } else {
         UI.error(result.message);
@@ -849,7 +866,7 @@ const UI = {
     });
   },
 
-  
+
   initContacto() {
     const form = document.getElementById('form-contacto');
     form.addEventListener('submit', function(e) {
@@ -888,12 +905,12 @@ const UI = {
     });
   },
 
-  
+
   initNosotros() {
 
   },
 
-  
+
   initDetalle() {
     let usuario = Auth.getCurrentUser();
 
@@ -1034,7 +1051,7 @@ const UI = {
         if (result.success) {
           UI.success('Reserva creada exitosamente');
           setTimeout(() => {
-            window.location.href = 'perfil.html';
+            window.location.href = '/perfil';
           }, 1500);
         } else {
           UI.error(result.message);
@@ -1045,11 +1062,11 @@ const UI = {
     }
   },
 
-  
+
   initAdminLogin() {
 
     if (Auth.isAdmin()) {
-      window.location.href = 'admin.html';
+      window.location.href = '/admin';
       return;
     }
 
@@ -1065,7 +1082,7 @@ const UI = {
       if (result.success) {
         UI.success('Bienvenido Administrador');
         setTimeout(() => {
-          window.location.href = 'admin.html';
+          window.location.href = '/admin';
         }, 1000);
       } else {
         UI.error(result.message);

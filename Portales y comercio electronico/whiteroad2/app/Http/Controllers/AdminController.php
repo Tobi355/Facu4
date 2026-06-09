@@ -31,6 +31,61 @@ class AdminController extends Controller
         return view('admin.usuarios.index', compact('usuarios'));
     }
 
+    public function createUsuario()
+    {
+        return view('admin.usuarios.create');
+    }
+
+    public function storeUsuario(Request $request)
+    {
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6|confirmed',
+            'telefono' => 'nullable|string|max:20',
+            'role' => 'required|in:user,admin',
+        ]);
+
+        User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => \Illuminate\Support\Facades\Hash::make($data['password']),
+            'telefono' => $data['telefono'] ?? null,
+            'role' => $data['role'],
+        ]);
+
+        return redirect()->route('admin.usuarios')->with('success', 'Usuario creado correctamente.');
+    }
+
+    public function editUsuario(User $user)
+    {
+        return view('admin.usuarios.edit', compact('user'));
+    }
+
+    public function updateUsuario(Request $request, User $user)
+    {
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'password' => 'nullable|string|min:6|confirmed',
+            'telefono' => 'nullable|string|max:20',
+            'role' => 'required|in:user,admin',
+        ]);
+
+        $user->name = $data['name'];
+        $user->email = $data['email'];
+        $user->telefono = $data['telefono'] ?? null;
+        $user->role = $data['role'];
+
+        if (!empty($data['password'])) {
+            $user->password = \Illuminate\Support\Facades\Hash::make($data['password']);
+        }
+
+        $user->save();
+
+        return redirect()->route('admin.usuarios')->with('success', 'Usuario actualizado correctamente.');
+    }
+
     public function destroyUsuario(User $user)
     {
         if ($user->id === auth()->id()) {

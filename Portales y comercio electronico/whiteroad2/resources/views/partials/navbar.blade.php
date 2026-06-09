@@ -9,10 +9,10 @@
         </div>
         <nav>
             <ul>
-                <li><a href="{{ route('home') }}">Inicio</a></li>
-                <li><a href="{{ route('servicios.index') }}">Servicios</a></li>
-                <li><a href="{{ route('nosotros') }}">Nosotros</a></li>
-                <li><a href="{{ route('contacto') }}">Contacto</a></li>
+                <li><a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">Inicio</a></li>
+                <li><a href="{{ route('servicios.index') }}" class="{{ request()->routeIs('servicios.*') ? 'active' : '' }}">Servicios</a></li>
+                <li><a href="{{ route('nosotros') }}" class="{{ request()->routeIs('nosotros') ? 'active' : '' }}">Nosotros</a></li>
+                <li><a href="{{ route('contacto') }}" class="{{ request()->routeIs('contacto') ? 'active' : '' }}">Contacto</a></li>
                 @auth
                     @if(Auth::user()->role === 'admin')
                         <li class="nav-admin"><a href="{{ route('admin.dashboard') }}">Admin</a></li>
@@ -38,7 +38,7 @@
                         </div>
                     </li>
                 @else
-                    <li class="nav-admin"><a href="{{ route('login') }}">Admin</a></li>
+                    <li class="nav-admin"><a href="{{ route('admin.login') }}">Admin</a></li>
                     <li class="nav-user-container"><a href="{{ route('login') }}" class="nav-btn">Ingresar</a></li>
                 @endauth
             </ul>

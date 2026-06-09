@@ -6,125 +6,78 @@
 <section class="container">
     <div class="section-header">
         <h2>Sobre <span>WhiteRoad</span></h2>
-        <p>Conocé nuestra historia y valores</p>
+        <p>Conocé nuestra historia, nuestra filosofía y nuestro equipo.</p>
     </div>
 
-    <div class="about-content">
-        <div class="about-section">
-            <h3>Quiénes Somos</h3>
-            <p>WhiteRoad es un taller especializado en mantenimiento y reparación de motocicletas con más de 10 años de experiencia. Nos dedicamos a brindar servicios de calidad con profesionalismo y transparencia.</p>
-            <p>Contamos con un equipo altamente capacitado y equipos modernos para atender a tu moto como se merece.</p>
+    <div class="services-grid">
+        <div class="card">
+            <div class="card-content">
+                <h3>Nuestra Historia</h3>
+                <p>WhiteRoad nació en 2015 con una misión clara: brindar un servicio de mantenimiento y reparación de motocicletas de calidad profesional, con atención personalizada y precios justos.</p>
+                <p>Lo que comenzó como un pequeño taller familiar hoy se ha convertido en un referente del sector.</p>
+            </div>
         </div>
 
-        <div class="about-section">
-            <h3>Misión</h3>
-            <p>Proporcionar servicios de mantenimiento y reparación de motocicletas de calidad superior, garantizando la seguridad, confiabilidad y satisfacción de nuestros clientes.</p>
+        <div class="card">
+            <div class="card-content">
+                <h3>Nuestra Filosofía</h3>
+                <p>Creemos que cada moto merece un trato especial. Por eso explicamos cada trabajo, detallamos los costos y solo realizamos las reparaciones necesarias.</p>
+                <p>Trabajamos con transparencia y compromiso en cada paso.</p>
+            </div>
         </div>
 
-        <div class="about-section">
-            <h3>Visión</h3>
-            <p>Ser el taller de referencia en la región, reconocido por nuestra excelencia, profesionalismo e innovación en el servicio a motocicletas.</p>
+        <div class="card">
+            <div class="card-content">
+                <h3>Valores</h3>
+                <ul style="list-style-position: inside;">
+                    <li><strong>Calidad:</strong> Excelencia en cada trabajo.</li>
+                    <li><strong>Integridad:</strong> Honestidad en nuestros presupuestos.</li>
+                    <li><strong>Profesionalismo:</strong> Equipo certificado y actualizado.</li>
+                    <li><strong>Puntualidad:</strong> Respetamos tu tiempo.</li>
+                    <li><strong>Garantía:</strong> Servicio confiable y seguro.</li>
+                </ul>
+            </div>
         </div>
+    </div>
 
-        <div class="about-section">
-            <h3>Valores</h3>
-            <ul style="list-style-position: inside;">
-                <li><strong>Calidad:</strong> Excelencia en cada trabajo realizado</li>
-                <li><strong>Integridad:</strong> Transparencia y honestidad con nuestros clientes</li>
-                <li><strong>Profesionalismo:</strong> Equipo capacitado y actualizado</li>
-                <li><strong>Puntualidad:</strong> Respeto por el tiempo de nuestros clientes</li>
-                <li><strong>Garantía:</strong> Compromiso con la satisfacción del cliente</li>
-            </ul>
+    <div class="section-header mt-5">
+        <h2>Nuestro <span>Equipo</span></h2>
+        <p>Profesionales apasionados por las motos.</p>
+    </div>
+
+    <div class="services-grid">
+        <div class="card">
+            <div class="card-content text-center">
+                <div class="card-image card-image-team">👨‍🔧</div>
+                <h3 class="card-title">Carlos Rodríguez</h3>
+                <p class="card-description">Fundador y mecánico jefe. 20 años de experiencia en motos de alta cilindrada.</p>
+            </div>
         </div>
-
-        <div class="about-section">
-            <h3>Por qué elegir WhiteRoad</h3>
-            <div class="features-grid">
-                <div class="feature">
-                    <div class="feature-icon">🏆</div>
-                    <h4>10+ años de experiencia</h4>
-                    <p>Más de una década trabajando con todas las marcas y cilindradas.</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-icon">⚡</div>
-                    <h4>Servicio rápido</h4>
-                    <p>Entregas en tiempo récord sin comprometer la calidad.</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-icon">💯</div>
-                    <h4>Garantía</h4>
-                    <p>Todos nuestros servicios incluyen garantía de satisfacción.</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-icon">💰</div>
-                    <h4>Mejores precios</h4>
-                    <p>Precios competitivos sin sacrificar la calidad.</p>
-                </div>
+        <div class="card">
+            <div class="card-content text-center">
+                <div class="card-image card-image-team">👩‍🔧</div>
+                <h3 class="card-title">Ana Martínez</h3>
+                <p class="card-description">Especialista en diagnóstico electrónico, certificada por los principales fabricantes.</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-content text-center">
+                <div class="card-image card-image-team">👨‍🔧</div>
+                <h3 class="card-title">Juan Pérez</h3>
+                <p class="card-description">Experto en mantenimiento y sistemas de frenos, con atención detallada en cada moto.</p>
             </div>
         </div>
     </div>
 </section>
 
-<style>
-    .about-content {
-        max-width: 900px;
-        margin: 40px auto;
-        padding: 20px;
-    }
-
-    .about-section {
-        margin-bottom: 40px;
-    }
-
-    .about-section h3 {
-        color: #333;
-        margin-bottom: 15px;
-        font-size: 24px;
-    }
-
-    .about-section p {
-        color: #666;
-        line-height: 1.8;
-        margin-bottom: 15px;
-    }
-
-    .about-section ul {
-        color: #666;
-        line-height: 1.8;
-    }
-
-    .about-section li {
-        margin-bottom: 10px;
-    }
-
-    .features-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 20px;
-        margin-top: 20px;
-    }
-
-    .feature {
-        background: #f9f9f9;
-        padding: 20px;
-        border-radius: 8px;
-        text-align: center;
-    }
-
-    .feature-icon {
-        font-size: 40px;
-        margin-bottom: 10px;
-    }
-
-    .feature h4 {
-        color: #333;
-        margin-bottom: 10px;
-    }
-
-    .feature p {
-        color: #666;
-        font-size: 14px;
-        margin: 0;
-    }
-</style>
+<section class="hero-cta">
+    <div class="hero-content">
+        <h2>¿Querés conocer <span>más</span>?</h2>
+        <p>Visitános en nuestro taller o contactanos para recibir asesoramiento personalizado.</p>
+        <div class="hero-buttons">
+            <a href="{{ route('contacto') }}" class="btn btn-primary">Contactar</a>
+            <a href="{{ route('servicios.index') }}" class="btn btn-secondary">Ver Servicios</a>
+        </div>
+    </div>
+</section>
 @endsection

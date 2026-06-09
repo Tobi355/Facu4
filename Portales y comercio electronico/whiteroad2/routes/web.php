@@ -20,7 +20,9 @@ Route::post('/contacto', [ContactController::class, 'store'])->name('contacto.st
 // Autenticación
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
+    Route::get('/admin/login', [AuthController::class, 'showAdminLogin'])->name('admin.login');
+    Route::post('/admin/login', [AuthController::class, 'login'])->name('admin.login.submit');
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register']);
 });
@@ -41,6 +43,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('servicios', ServicioController::class)->except(['show']);
     Route::resource('categorias', CategoriaController::class)->except(['show']);
     Route::get('usuarios', [AdminController::class, 'usuarios'])->name('usuarios');
+    Route::get('usuarios/crear', [AdminController::class, 'createUsuario'])->name('usuarios.create');
+    Route::post('usuarios', [AdminController::class, 'storeUsuario'])->name('usuarios.store');
+    Route::get('usuarios/{user}/editar', [AdminController::class, 'editUsuario'])->name('usuarios.edit');
+    Route::put('usuarios/{user}', [AdminController::class, 'updateUsuario'])->name('usuarios.update');
     Route::delete('usuarios/{user}', [AdminController::class, 'destroyUsuario'])->name('usuarios.destroy');
     Route::get('reservas', [AdminController::class, 'reservas'])->name('reservas');
     Route::patch('reservas/{reserva}/estado', [AdminController::class, 'cambiarEstadoReserva'])->name('reservas.estado');

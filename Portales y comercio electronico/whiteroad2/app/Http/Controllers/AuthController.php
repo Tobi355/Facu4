@@ -14,6 +14,11 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
+    public function showAdminLogin()
+    {
+        return view('auth.admin-login');
+    }
+
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -21,12 +26,26 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
+        $adminLogin = $request->boolean('admin_login');
+
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
             $user = Auth::user();
-            if ($user->role === 'admin') {
+
+            if ($adminLogin && $user->role !== 'admin') {
+                Auth::logout();
+                return back()->withErrors(['email' => 'Estas credenciales son solo para administrador.'])->onlyInput('email');
+            }
+
+            if (!$adminLogin && $user->role === 'admin') {
+                Auth::logout();
+                return back()->withErrors(['email' => 'Las credenciales de administrador no se pueden usar en el login de usuario.'])->onlyInput('email');
+            }
+
+            if ($adminLogin) {
                 return redirect()->intended('/admin');
             }
+
             return redirect()->intended('/perfil');
         }
 

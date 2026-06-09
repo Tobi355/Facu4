@@ -18,14 +18,22 @@ class ServicioController extends Controller
     {
         $categorias = Categoria::orderBy('nombre')->get();
 
-        $servicios = Servicio::with('categoria')
+        $query = request()->query('categoria');
+
+        $serviciosQuery = Servicio::with('categoria')
             ->where('activo', true)
-            ->orderBy('nombre')
-            ->get();
+            ->orderBy('nombre');
+
+        if ($query) {
+            $serviciosQuery->where('categoria_id', $query);
+        }
+
+        $servicios = $serviciosQuery->get();
 
         return view('servicios.index', compact(
             'categorias',
-            'servicios'
+            'servicios',
+            'query'
         ));
     }
 
@@ -74,10 +82,23 @@ class ServicioController extends Controller
             'descripcion' => 'required',
             'duracion' => 'required',
             'condiciones' => 'nullable',
-            'categoria_id' => 'required|exists:categorias,id'
+            'categoria_id' => 'required|exists:categorias,id',
+            'imagen' => 'nullable|string|max:255',
+            'activo' => 'nullable|in:1',
+            'destacado' => 'nullable|in:1',
         ]);
 
-        Servicio::create($request->all());
+        Servicio::create([
+            'nombre' => $request->nombre,
+            'precio' => $request->precio,
+            'descripcion' => $request->descripcion,
+            'duracion' => $request->duracion,
+            'condiciones' => $request->condiciones,
+            'categoria_id' => $request->categoria_id,
+            'imagen' => $request->imagen,
+            'activo' => $request->has('activo'),
+            'destacado' => $request->has('destacado'),
+        ]);
 
         return redirect()
             ->route('admin.servicios.index')
@@ -102,10 +123,23 @@ class ServicioController extends Controller
             'descripcion' => 'required',
             'duracion' => 'required',
             'condiciones' => 'nullable',
-            'categoria_id' => 'required|exists:categorias,id'
+            'categoria_id' => 'required|exists:categorias,id',
+            'imagen' => 'nullable|string|max:255',
+            'activo' => 'nullable|in:1',
+            'destacado' => 'nullable|in:1',
         ]);
 
-        $servicio->update($request->all());
+        $servicio->update([
+            'nombre' => $request->nombre,
+            'precio' => $request->precio,
+            'descripcion' => $request->descripcion,
+            'duracion' => $request->duracion,
+            'condiciones' => $request->condiciones,
+            'categoria_id' => $request->categoria_id,
+            'imagen' => $request->imagen,
+            'activo' => $request->has('activo'),
+            'destacado' => $request->has('destacado'),
+        ]);
 
         return redirect()
             ->route('admin.servicios.index')

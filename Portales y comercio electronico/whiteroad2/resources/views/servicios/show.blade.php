@@ -6,7 +6,12 @@
 <section class="container">
     <div class="service-detail">
         <div class="service-detail-image">
-            <div class="placeholder">{{ $servicio->imagen ?? '🔧' }}</div>
+            @php $imgPath = public_path('images/' . ($servicio->imagen ?? '')); @endphp
+            @if(!empty($servicio->imagen) && file_exists($imgPath))
+                <img src="{{ asset('images/' . $servicio->imagen) }}" alt="{{ $servicio->nombre }}">
+            @else
+                <div class="placeholder">🔧</div>
+            @endif
         </div>
         <div class="service-detail-info">
             <h2>{{ $servicio->nombre }}</h2>

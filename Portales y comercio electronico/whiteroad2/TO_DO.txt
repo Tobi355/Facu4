@@ -1,9 +1,11 @@
-favicon V
-imagenes de los servicios rotas V
-filtor en servicios no funcionan F
-pagina nosotros mala estetica V
-pagina contacto mala estetica V
-vista dashboar no funciona ni se ve como deberia VF
-crear usuario no funciona VF
-usuario de proeba roto F
+navbar en dashboar no se ve como deberia, el diseño debe coincidir con el del tp1
 ver que todos los botones lleven a su link correcto F
+boton admin debe llevar a iniciar sesion a login separado del de un usuario comun, como en el tp1 con sus diseños respectivos como en el tp1
+verificar diseño en cada vista y pagina para que ademas de funcional coincida con el diseño de la misma en el tp 1 pero con sus mejora/arreglos/avances/etc
+agregar 2 servicios destacados para que quede bien la home
+no se carga una imagen de un servicio (regulacion de valvulas)
+estetica de "nosotros" falta pulir
+agregar mapa en "contacto"
+estetica de login de admin rara
+admin debe ir al dashboard desde detalle de producto. no poder hacer reservas
+mensajes de error o enviado al mandar formulario de contacto mal, rediseñar el mensaje de error o enviado

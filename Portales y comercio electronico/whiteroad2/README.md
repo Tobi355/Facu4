@@ -7,6 +7,33 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## WhiteRoad Laravel App
+
+Este repositorio contiene la migración del sitio WhiteRoads a Laravel 12 con:
+
+- Área pública completa: inicio, catálogo, detalle de servicio, contacto, login/registro y perfil.
+- Área admin: dashboard, CRUD de servicios, categorías, usuarios, reservas y mensajes de contacto.
+- Autenticación propia sin Breeze/Jetstream y control de roles mediante middleware.
+- Seeders para usuario administrador, categorías y servicios.
+
+### Instrucciones rápidas
+
+```bash
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+php artisan db:seed
+php artisan serve
+```
+
+Luego accedé a `http://127.0.0.1:8000`.
+
+Usuario admin de ejemplo:
+
+- Email: `admin@whiteroad.com`
+- Contraseña: `admin123`
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:

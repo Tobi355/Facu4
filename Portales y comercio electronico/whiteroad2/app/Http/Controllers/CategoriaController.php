@@ -23,13 +23,14 @@ class CategoriaController extends Controller
     {
         $request->validate([
             'nombre' => 'required|max:100',
-            'descripcion' => 'nullable'
+            'descripcion' => 'nullable',
+            'estado' => 'nullable|in:activo'
         ]);
 
         Categoria::create([
             'nombre' => $request->nombre,
             'descripcion' => $request->descripcion,
-            'estado' => 'activo'
+            'estado' => $request->has('estado') ? 'activo' : 'inactivo'
         ]);
 
         return redirect()->route('admin.categorias.index')

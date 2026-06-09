@@ -4,9 +4,6 @@
 
 @section('content')
 
-<main>
-
-
     <section class="hero">
 
 
@@ -79,7 +76,7 @@
 
             <div class="hero-buttons">
             <a href="{{ route('servicios.index') }}" class="btn btn-primary">Ver Servicios</a>
-            <a href="#contacto" class="btn btn-secondary">Contactar</a>
+            <a href="{{ route('contacto') }}" class="btn btn-secondary">Contactar</a>
             </div>
 
         </div>
@@ -101,10 +98,12 @@
         <div class="services-grid">
             @forelse($servicios ?? [] as $servicio)
                 <article class="service-card">
-                    <img
-                        src="{{ asset('images/' . $servicio->imagen) }}"
-                        alt="{{ $servicio->nombre }}"
-                    >
+                    @php $imgPath = public_path('images/' . ($servicio->imagen ?? '')); @endphp
+                    @if(!empty($servicio->imagen) && file_exists($imgPath))
+                        <img src="{{ asset('images/' . $servicio->imagen) }}" alt="{{ $servicio->nombre }}">
+                    @else
+                        <div class="card-image">🔧</div>
+                    @endif
                     <div class="service-content">
                         <span class="service-category">
                             {{ $servicio->categoria->nombre }}
@@ -180,11 +179,9 @@
             </p>
             <div class="hero-buttons">
             <a href="{{ route('login') }}" class="btn btn-primary">Reservar Turno</a>
-            <a href="#contacto" class="btn btn-secondary">Consultar</a>
+            <a href="{{ route('contacto') }}" class="btn btn-secondary">Consultar</a>
             </div>
         </div>
     </section>
-
-</main>
 
 @endsection

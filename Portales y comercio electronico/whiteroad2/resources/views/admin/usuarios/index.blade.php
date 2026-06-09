@@ -5,6 +5,7 @@
 <div class="admin-section">
     <div class="section-header">
         <h2>Usuarios</h2>
+        <a href="{{ route('admin.usuarios.create') }}" class="btn btn-primary">+ Nuevo Usuario</a>
     </div>
 
     @if (session('success'))
@@ -39,14 +40,15 @@
                     </td>
                     <td>{{ $usuario->reservas_count }}</td>
                     <td>
-                        @if($usuario->role !== 'admin')
-                            <form action="{{ route('admin.usuarios.destroy', $usuario) }}" method="POST" style="display:inline;">
+                        <a href="{{ route('admin.usuarios.edit', $usuario) }}" class="btn btn-sm btn-secondary">Editar</a>
+                        @if($usuario->id !== auth()->id())
+                            <form action="{{ route('admin.usuarios.destroy', $usuario) }}" method="POST" style="display:inline; margin-left: 8px;">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro? Esta acción no se puede deshacer.')">Eliminar</button>
                             </form>
                         @else
-                            <span class="text-muted">Admin</span>
+                            <span class="text-muted" style="margin-left: 8px;">No podés eliminarte</span>
                         @endif
                     </td>
                 </tr>
@@ -115,6 +117,11 @@
         cursor: pointer;
         border: none;
         font-size: 14px;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
     }
 
     .btn-danger {
