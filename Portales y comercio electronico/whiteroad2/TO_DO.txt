@@ -1,0 +1,9 @@
+favicon V
+imagenes de los servicios rotas V
+filtor en servicios no funcionan F
+pagina nosotros mala estetica V
+pagina contacto mala estetica V
+vista dashboar no funciona ni se ve como deberia VF
+crear usuario no funciona VF
+usuario de proeba roto F
+ver que todos los botones lleven a su link correcto F
