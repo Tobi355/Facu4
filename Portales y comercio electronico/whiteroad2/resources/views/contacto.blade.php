@@ -11,32 +11,33 @@
 
     <div class="services-grid">
         <div class="card">
-            <div class="card-content">
-                <h3>Información de Contacto</h3>
-
-                <div class="info-item">
-                    <h4>📍 Dirección</h4>
+            <div class="auth-card">
+                <h3>Información de contacto</h3>
+                <div class="mb-3">
+                    <h4 class="text-red mb-1">📍 Dirección</h4>
                     <p>Av. Siempre Viva 1234<br>Buenos Aires, Argentina</p>
                 </div>
-
-                <div class="info-item">
-                    <h4>📞 Teléfono</h4>
-                    <p><a href="tel:+541145678901">(011) 4567-8901</a><br><a href="tel:+54111512345678">(011) 15-1234-5678</a></p>
+                <div class="mb-3">
+                    <h4 class="text-red mb-1">📞 Teléfono</h4>
+                    <p>(011) 4567-8901<br>(011) 15-1234-5678 (WhatsApp)</p>
                 </div>
-
-                <div class="info-item">
-                    <h4>✉️ Email</h4>
-                    <p><a href="mailto:info@whiteroad.com">info@whiteroad.com</a><br><a href="mailto:turnos@whiteroad.com">turnos@whiteroad.com</a></p>
+                <div class="mb-3">
+                    <h4 class="text-red mb-1">✉️ Email</h4>
+                    <p>info@whiteroad.com<br>turnos@whiteroad.com</p>
                 </div>
-
-                <div class="info-item">
-                    <h4>🕐 Horarios</h4>
-                    <p>Lunes a Viernes: 8:00 - 18:00<br>Sábados: 9:00 - 13:00<br>Domingos: Cerrado</p>
+                <div class="mb-3">
+                    <h4 class="text-red mb-1">🕐 Horarios de atención</h4>
+                    <p><strong>Lunes a Viernes:</strong><br>8:00 - 18:00 hs</p>
+                    <p><strong>Sábados:</strong><br>9:00 - 13:00 hs</p>
+                    <p><strong>Domingos:</strong><br>Cerrado</p>
                 </div>
-
-                <div class="info-item">
-                    <h4>Redes Sociales</h4>
-                    <p><a href="#">Instagram</a> · <a href="#">Facebook</a> · <a href="#">WhatsApp</a></p>
+                <div>
+                    <h4 class="text-red mb-1">📱 Redes Sociales</h4>
+                    <p>
+                    <a href="#">Instagram</a> |
+                    <a href="#">Facebook</a> |
+                    <a href="#">WhatsApp</a>
+                    </p>
                 </div>
             </div>
         </div>
@@ -45,21 +46,16 @@
             <div class="card-content">
                 <h3>Formulario de Contacto</h3>
 
-                @if (session('success'))
-                    <div class="alert alert-success">
-                        {{ session('success') }}
-                    </div>
-                @endif
-
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
+                {{-- Toasters will display session messages via public/js/contacto.js --}}
+                <div id="contacto-messages"
+                     style="display:none;"
+                     data-success="{{ session('success') ? e(session('success')) : '' }}"
+                     data-error="{{ session('error') ? e(session('error')) : '' }}"
+                     data-errors='@json($errors->any() ? $errors->all() : [])'>
+                </div>
+                @push('scripts')
+                    <script src="{{ asset('js/contacto.js') }}"></script>
+                @endpush
 
                 <form method="POST" action="{{ route('contacto.store') }}">
                     @csrf
@@ -93,11 +89,6 @@
                 </form>
             </div>
         </div>
-    </div>
-
-    <div class="service-detail-image placeholder placeholder-map mt-4">
-        🗺️
-        <span class="placeholder-text">Acá iría el mapa de Google Maps</span>
     </div>
 </section>
 @endsection

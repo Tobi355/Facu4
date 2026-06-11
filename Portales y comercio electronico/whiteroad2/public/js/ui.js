@@ -9,7 +9,6 @@ const UI = {
     this.initMobileMenu();
     this.initToastContainer();
     this.initUserDropdown();
-    this.updateNavAuth();
     this.disableNativeFormValidation();
     this.initScrollAnimations();
   },
@@ -60,10 +59,18 @@ const UI = {
 
 
   initUserDropdown() {
+    document.querySelectorAll('.nav-user-btn').forEach(button => {
+      const container = button.closest('.nav-user-container');
+      if (!container) return;
+
+      button.addEventListener('click', (e) => {
+        e.stopPropagation();
+        container.classList.toggle('open');
+      });
+    });
 
     document.addEventListener('click', (e) => {
-      const container = e.target.closest('.nav-user-container');
-      if (!container) {
+      if (!e.target.closest('.nav-user-container')) {
         document.querySelectorAll('.nav-user-container').forEach(c => {
           c.classList.remove('open');
         });
@@ -73,6 +80,11 @@ const UI = {
 
 
   updateNavAuth() {
+    const hasStorage = typeof Storage !== 'undefined' && Storage && typeof Storage.get === 'function';
+    if (!hasStorage) {
+      return;
+    }
+
     const session = Storage.get(Storage.KEYS.SESSION);
     const userContainer = document.querySelector('.nav-user-container');
     const adminLinks = document.querySelectorAll('.nav-admin');
@@ -108,7 +120,7 @@ const UI = {
       userContainer.classList.remove('hidden');
 
       const toggleBtn = userContainer.querySelector('#nav-user-toggle');
-      const dropdown = userContainer.querySelector('#nav-user-dropdown');
+      const logoutBtn = userContainer.querySelector('#nav-logout');
 
       if (toggleBtn) {
         toggleBtn.addEventListener('click', (e) => {
@@ -117,8 +129,7 @@ const UI = {
         });
       }
 
-      const logoutBtn = userContainer.querySelector('#nav-logout');
-      if (logoutBtn) {
+      if (logoutBtn && typeof Auth !== 'undefined' && Auth && typeof Auth.logout === 'function') {
         logoutBtn.addEventListener('click', (e) => {
           e.preventDefault();
           this.showConfirmModal(

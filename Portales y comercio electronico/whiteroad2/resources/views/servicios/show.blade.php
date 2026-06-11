@@ -37,6 +37,10 @@
                 </div>
             @endif
             @auth
+                @if(Auth::user()->role === 'admin')
+                                <a href="{{ route('admin.servicios.store') }}" class="btn btn-primary">ver servicios</a>
+                                <a href="{{ route('admin.servicios.edit', $servicio->id) }}" class="btn btn-primary">editar servicio</a>
+                @else
                 <form action="{{ route('reservas.store') }}" method="POST">
                     @csrf
                     <input type="hidden" name="servicio_id" value="{{ $servicio->id }}">
@@ -64,6 +68,7 @@
                     </div>
                     <button type="submit" class="btn btn-primary">Reservar</button>
                 </form>
+                @endif
             @else
                 <p>Para reservar, <a href="{{ route('login') }}">iniciá sesión</a>.</p>
             @endauth

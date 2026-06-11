@@ -18,7 +18,7 @@
                         <li class="nav-admin"><a href="{{ route('admin.dashboard') }}">Admin</a></li>
                     @endif
                     <li class="nav-user-container">
-                        <button class="nav-user-btn" id="nav-user-toggle">
+                        <button type="button" class="nav-user-btn" id="nav-user-toggle">
                             <span class="nav-user-avatar">{{ substr(Auth::user()->name, 0, 1) }}</span>
                             <span class="nav-user-name">{{ Auth::user()->name }}</span>
                             <span class="nav-user-arrow">▼</span>

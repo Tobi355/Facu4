@@ -12,7 +12,6 @@
         <div class="form-container">
         <form method="POST" action="{{ route('login.submit') }}">
             @csrf
-            <input type="hidden" name="admin_login" value="0">
             <div class="form-group">
                 <label for="email">Email</label>
                 <input type="email" name="email" id="email" value="{{ old('email') }}" required autofocus>

@@ -1,0 +1,70 @@
+.empty-state {
+  text-align: center;
+  color: var(--gris-claro);
+  margin-top: 2rem;
+  font-size: 1rem;
+}
+
+.reserve-details-modal {
+  max-width: 760px;
+  width: 100%;
+  padding: 2rem;
+}
+
+.reserve-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.reserve-details-card,
+.reserve-details-group {
+  background: rgba(255, 255, 255, 0.04);
+  padding: 1rem 1.25rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.reserve-details-label {
+  margin: 0 0 0.5rem;
+  color: var(--gris-claro);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.reserve-details-value {
+  margin: 0;
+  color: var(--blanco);
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.reserve-details-meta {
+  margin: 0.35rem 0 0;
+  color: var(--gris-claro);
+  font-size: 0.9rem;
+}
+
+.reserve-details-note {
+  font-style: italic;
+}
+
+.reserve-details-divider {
+  height: 1px;
+  background: rgba(255, 26, 26, 0.25);
+  margin: 1.5rem 0;
+  border: none;
+}
+
+.modal-title {
+  color: var(--blanco);
+  margin: 0 0 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .reserve-details-grid {
+    grid-template-columns: 1fr;
+  }
+}

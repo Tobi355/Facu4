@@ -31,7 +31,7 @@ class ServicioSeeder extends Seeder
                 'condiciones'=>'Filtro incluido.',
                 'imagen'=>'2.webp',
                 'activo'=>true,
-                'destacado'=>true,
+                'destacado'=>false,
                 'categoria_id'=>1
             ],
 
@@ -127,7 +127,7 @@ class ServicioSeeder extends Seeder
                 'condiciones'=>'',
                 'imagen'=>'10.webp',
                 'activo'=>true,
-                'destacado'=>false,
+                'destacado'=>true,
                 'categoria_id'=>4
             ],
 
@@ -187,7 +187,7 @@ class ServicioSeeder extends Seeder
                 'condiciones'=>'',
                 'imagen'=>'15.webp',
                 'activo'=>true,
-                'destacado'=>false,
+                'destacado'=>true,
                 'categoria_id'=>5
             ],
 
@@ -199,7 +199,7 @@ class ServicioSeeder extends Seeder
                 'condiciones'=>'',
                 'imagen'=>'16.webp',
                 'activo'=>true,
-                'destacado'=>false,
+                'destacado'=>true,
                 'categoria_id'=>6
             ],
 

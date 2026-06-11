@@ -10,6 +10,7 @@ class Reserva extends Model
         'user_id',
         'servicio_id',
         'fecha',
+        'hora',
         'estado',
         'observaciones'
     ];

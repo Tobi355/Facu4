@@ -1,9 +1,11 @@
 @extends('layouts.admin')
 
+@section('title', 'Servicios - Admin')
+
 @section('content')
 
-<div class="admin-section">
-        <div class="section-header">
+<section class="admin-section container">
+    <div class="section-header">
         <h2>Servicios</h2>
         <a href="{{ route('admin.servicios.create') }}" class="btn btn-primary">+ Nuevo Servicio</a>
     </div>
@@ -19,12 +21,11 @@
     @endif
 
     @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
+        <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <table class="table table-striped">
+    <div class="admin-table-container">
+        <table class="admin-table">
         <thead>
             <tr>
                 <th>ID</th>
@@ -66,124 +67,7 @@
                 </tr>
             @endforeach
         </tbody>
-    </table>
-
-    @if($servicios->isEmpty())
-        <p class="text-center text-muted">No hay servicios registrados.</p>
-    @endif
-</div>
-
-<style>
-    .admin-section {
-        padding: 20px;
-    }
-
-    .section-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-    }
-
-    .table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-    }
-
-    .table th,
-    .table td {
-        padding: 12px;
-        text-align: left;
-        border-bottom: 1px solid #ddd;
-    }
-
-    .table th {
-        background-color: #f5f5f5;
-        font-weight: bold;
-    }
-
-    .table tr:hover {
-        background-color: #f9f9f9;
-    }
-
-    .badge {
-        display: inline-block;
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-size: 12px;
-        font-weight: bold;
-    }
-
-    .badge-success {
-        background-color: #28a745;
-        color: white;
-    }
-
-    .badge-danger {
-        background-color: #dc3545;
-        color: white;
-    }
-
-    .badge-info {
-        background-color: #17a2b8;
-        color: white;
-    }
-
-    .btn {
-        padding: 6px 12px;
-        border-radius: 4px;
-        text-decoration: none;
-        cursor: pointer;
-        border: none;
-        font-size: 14px;
-    }
-
-    .btn-primary {
-        background-color: #007bff;
-        color: white;
-    }
-
-    .btn-warning {
-        background-color: #ffc107;
-        color: black;
-    }
-
-    .btn-danger {
-        background-color: #dc3545;
-        color: white;
-    }
-
-    .btn-sm {
-        padding: 4px 8px;
-        font-size: 12px;
-    }
-
-    .alert {
-        padding: 12px;
-        margin-bottom: 20px;
-        border-radius: 4px;
-    }
-
-    .alert-success {
-        background-color: #d4edda;
-        color: #155724;
-        border: 1px solid #c3e6cb;
-    }
-
-    .alert-danger {
-        background-color: #f8d7da;
-        color: #721c24;
-        border: 1px solid #f5c6cb;
-    }
-
-    .text-center {
-        text-align: center;
-    }
-
-    .text-muted {
-        color: #999;
-    }
-</style>
-
+        </table>
+    </div>
+</section>
 @endsection

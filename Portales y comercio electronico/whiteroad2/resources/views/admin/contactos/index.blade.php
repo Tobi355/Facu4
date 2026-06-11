@@ -1,12 +1,11 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('title', 'Mensajes de Contacto - Admin')
 
 @section('content')
 <section class="admin-section container">
     <div class="section-header">
-        <h2>Mensajes de <span>Contacto</span></h2>
-        <p>Gestión de consultas recibidas</p>
+        <h2>Mensajes recibidos</h2>
     </div>
 
     @if (session('success'))
