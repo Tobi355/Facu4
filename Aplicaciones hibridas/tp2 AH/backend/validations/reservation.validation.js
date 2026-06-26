@@ -9,4 +9,13 @@ const createReservationValidation = [
     .isISO8601().withMessage('Invalid date format'),
 ];
 
-module.exports = { createReservationValidation };
+const updateReservationValidation = [
+  body('date')
+    .optional()
+    .isISO8601().withMessage('Invalid date format'),
+  body('status')
+    .optional()
+    .isIn(['confirmed', 'cancelled']).withMessage('Status must be confirmed or cancelled'),
+];
+
+module.exports = { createReservationValidation, updateReservationValidation };

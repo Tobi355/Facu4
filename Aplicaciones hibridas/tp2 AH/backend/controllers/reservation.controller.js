@@ -37,4 +37,15 @@ const cancel = async (req, res, next) => {
   }
 };
 
-module.exports = { getMyReservations, getAll, create, cancel };
+const update = async (req, res, next) => {
+  try {
+    const isAdmin = req.user?.role === 'admin';
+    const userId = isAdmin ? null : req.user._id;
+    const reservation = await reservationService.update(req.params.id, userId, req.body);
+    res.json({ success: true, reservation });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { getMyReservations, getAll, create, cancel, update };

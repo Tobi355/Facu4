@@ -30,11 +30,18 @@ const remove = async (id) => {
   const cls = await Class.findByIdAndDelete(id);
   if (!cls) throw new AppError('Class not found.', 404);
 
+  // Cancelar todas las reservas confirmadas y decrementar count
   const Reservation = require('../models/Reservation');
-  await Reservation.updateMany(
-    { class: id, status: 'confirmed' },
-    { status: 'cancelled' },
-  );
+  const reservations = await Reservation.find({
+    class: id,
+    status: 'confirmed',
+  });
+
+  // Usar updateOne para cada reserva para que los pre-hooks se ejecuten
+  for (const reservation of reservations) {
+    reservation.status = 'cancelled';
+    await reservation.save(); // Esto dispara el pre-hook
+  }
 
   return cls;
 };

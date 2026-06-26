@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'framer-motion';
+import { Home, BookOpen, CalendarDays, LayoutDashboard, LogOut, User, LogIn, UserPlus } from 'lucide-react';
 
 const Navbar = () => {
   const { user, logout, isAdmin } = useAuth();
@@ -20,7 +21,7 @@ const Navbar = () => {
       transition={{ duration: 0.6, ease: 'easeOut' }}
     >
       <div className="container">
-        <Link className="navbar-brand" to="/">
+        <Link className="navbar-brand d-flex align-items-center" to="/">
           <span className="brand-icon">✦</span> Harmony Studio
         </Link>
 
@@ -34,34 +35,42 @@ const Navbar = () => {
         </button>
 
         <div className="collapse navbar-collapse" id="navMenu">
-          <ul className="navbar-nav ms-auto align-items-lg-center gap-2">
+          <ul className="navbar-nav ms-auto align-items-lg-center gap-1">
             <li className="nav-item">
-              <Link className="nav-link" to="/">Inicio</Link>
+              <Link className="nav-link d-flex align-items-center gap-1" to="/">
+                <Home size={15} /> Inicio
+              </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/classes">Clases</Link>
+              <Link className="nav-link d-flex align-items-center gap-1" to="/classes">
+                <BookOpen size={15} /> Clases
+              </Link>
             </li>
             {user ? (
               <>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/my-reservations">Mis Reservas</Link>
+                  <Link className="nav-link d-flex align-items-center gap-1" to="/my-reservations">
+                    <CalendarDays size={15} /> Mis Reservas
+                  </Link>
                 </li>
                 {isAdmin && (
                   <li className="nav-item">
-                    <Link className="nav-link" to="/admin">Dashboard</Link>
+                    <Link className="nav-link d-flex align-items-center gap-1" to="/admin">
+                      <LayoutDashboard size={15} /> Dashboard
+                    </Link>
                   </li>
                 )}
                 <li className="nav-item dropdown">
                   <button
-                    className="nav-link dropdown-toggle btn btn-link text-white text-decoration-none"
+                    className="nav-link dropdown-toggle btn btn-link text-white text-decoration-none d-flex align-items-center gap-1"
                     data-bs-toggle="dropdown"
                   >
-                    {user.name}
+                    <User size={15} /> {user.name}
                   </button>
                   <ul className="dropdown-menu dropdown-menu-end">
                     <li>
-                      <button className="dropdown-item" onClick={handleLogout}>
-                        Cerrar Sesión
+                      <button className="dropdown-item d-flex align-items-center gap-2" onClick={handleLogout}>
+                        <LogOut size={15} /> Cerrar Sesión
                       </button>
                     </li>
                   </ul>
@@ -70,11 +79,13 @@ const Navbar = () => {
             ) : (
               <>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/login">Iniciar Sesión</Link>
+                  <Link className="nav-link d-flex align-items-center gap-1" to="/login">
+                    <LogIn size={15} /> Iniciar Sesión
+                  </Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="btn btn-outline-light btn-sm rounded-pill px-4" to="/register">
-                    Registrarse
+                  <Link className="btn btn-outline-light btn-sm rounded-pill px-4 d-flex align-items-center gap-1" to="/register">
+                    <UserPlus size={15} /> Registrarse
                   </Link>
                 </li>
               </>

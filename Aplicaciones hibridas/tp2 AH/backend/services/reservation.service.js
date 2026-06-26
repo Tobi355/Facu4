@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Reservation = require('../models/Reservation');
 const Class = require('../models/Class');
 const AppError = require('../utils/error');
@@ -57,4 +58,42 @@ const cancel = async (reservationId, userId) => {
   return reservation;
 };
 
-module.exports = { getUserReservations, getAllReservations, create, cancel };
+const update = async (reservationId, userId, updates) => {
+  let query = { _id: reservationId };
+  if (userId) {
+    query.user = userId;
+  }
+
+  const reservation = await Reservation.findOne(query);
+  if (!reservation) throw new AppError('Reservation not found.', 404);
+
+  if (updates.date) {
+    const cls = await Class.findById(reservation.class);
+    if (!cls) throw new AppError('Class not found.', 404);
+
+    const existing = await Reservation.findOne({
+      _id: { $ne: reservationId },
+      user: reservation.user,
+      class: reservation.class,
+      date: new Date(updates.date),
+      status: 'confirmed',
+    });
+    if (existing) {
+      throw new AppError('You already have a reservation for this class on this date.', 409);
+    }
+    reservation.date = new Date(updates.date);
+  }
+
+  if (updates.status && updates.status === 'cancelled' && reservation.status === 'confirmed') {
+    reservation.status = 'cancelled';
+    const ClassModel = mongoose.model('Class');
+    await ClassModel.findByIdAndUpdate(reservation.class, { $inc: { enrolledCount: -1 } });
+  } else if (updates.status) {
+    reservation.status = updates.status;
+  }
+
+  await reservation.save();
+  return (await reservation.populate('class')).populate('user', 'name email');
+};
+
+module.exports = { getUserReservations, getAllReservations, create, cancel, update };

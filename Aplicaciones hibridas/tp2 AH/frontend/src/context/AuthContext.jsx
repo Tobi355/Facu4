@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useContext, useCallback } from 'react';
-import API from '../api/axios';
+import { getProfile, login as loginApi, register as registerApi } from '../services/authService';
 
 const AuthContext = createContext(null);
 
@@ -14,8 +14,8 @@ export const AuthProvider = ({ children }) => {
       return;
     }
     try {
-      const { data } = await API.get('/auth/profile');
-      setUser(data.user);
+      const result = await getProfile();
+      setUser(result.user);
     } catch {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
@@ -29,19 +29,19 @@ export const AuthProvider = ({ children }) => {
   }, [loadUser]);
 
   const login = async (email, password) => {
-    const { data } = await API.post('/auth/login', { email, password });
-    localStorage.setItem('token', data.token);
-    localStorage.setItem('user', JSON.stringify(data.user));
-    setUser(data.user);
-    return data.user;
+    const result = await loginApi(email, password);
+    localStorage.setItem('token', result.token);
+    localStorage.setItem('user', JSON.stringify(result.user));
+    setUser(result.user);
+    return result.user;
   };
 
   const register = async (name, email, password, phone) => {
-    const { data } = await API.post('/auth/register', { name, email, password, phone });
-    localStorage.setItem('token', data.token);
-    localStorage.setItem('user', JSON.stringify(data.user));
-    setUser(data.user);
-    return data.user;
+    const result = await registerApi(name, email, password, phone);
+    localStorage.setItem('token', result.token);
+    localStorage.setItem('user', JSON.stringify(result.user));
+    setUser(result.user);
+    return result.user;
   };
 
   const logout = () => {

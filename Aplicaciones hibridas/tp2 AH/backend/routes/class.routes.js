@@ -7,8 +7,11 @@ const { createClassValidation, updateClassValidation } = require('../validations
 
 const router = Router();
 
-router.get('/', controller.getAll);
+// Rutas específicas primero (antes de :id)
 router.get('/admin', authenticate, authorizeAdmin, controller.getAllAdmin);
+
+// Rutas generales después
+router.get('/', controller.getAll);
 router.get('/:id', controller.getById);
 router.post('/', authenticate, authorizeAdmin, createClassValidation, validate, controller.create);
 router.put('/:id', authenticate, authorizeAdmin, updateClassValidation, validate, controller.update);
