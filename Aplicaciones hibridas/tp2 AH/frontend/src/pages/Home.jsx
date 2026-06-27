@@ -79,6 +79,7 @@ const Home = () => {
                 )}
               </motion.div>
             </div>
+            
             <div className="col-lg-6 d-none d-lg-flex justify-content-center">
               <motion.div
                 className="hero-circle"
@@ -87,19 +88,19 @@ const Home = () => {
                 transition={{ duration: 0.8, delay: 0.3 }}
               >
                 <div className="hero-circle-inner">
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}  
+                  <motion.img
+                    src="https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=900&q=80"
+                    alt="Harmony Studio"
+                    className="hero-illustration"
+                    transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
                   />
-                  <span className="hero-circle-text" style={{ position: 'relative', zIndex: 1 }}>
-                    Harmony
-                  </span>
                 </div>
               </motion.div>
             </div>
           </div>
         </div>
       </section>
+      <hr className="hr1" />
 
       <section className="py-5">
         <div className="container">
@@ -167,7 +168,7 @@ const Home = () => {
       </section>
 
       {/* SOBRE NOSOTROS */}
-      <section id="about" className="py-5 bg-light">
+      <section id="about" className="py-5">
         <div className="container">
           <motion.div
             className="text-center mb-5"
@@ -250,6 +251,8 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      <hr className="hr1" />
 
       {/* CONTACTO */}
       <section id="contact" className="py-5">

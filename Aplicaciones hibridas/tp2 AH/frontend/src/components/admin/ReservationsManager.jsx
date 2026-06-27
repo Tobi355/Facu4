@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
 import { CalendarDays, Trash2, CheckCircle, XCircle } from 'lucide-react';
-import { updateReservation, cancelReservation } from '../../services/reservationService';
+import { updateReservation, deleteReservation } from '../../services/reservationService';
 import EmptyState from '../EmptyState';
+import ConfirmModal from '../ConfirmModal';
 
 const ReservationsManager = ({ reservations, onRefresh, setToast }) => {
   const [cancellingId, setCancellingId] = useState(null);
+  const [confirmCancel, setConfirmCancel] = useState(null);
 
-  const handleCancel = async (id) => {
-    if (!window.confirm('¿Cancelar esta reserva?')) return;
-    setCancellingId(id);
+  const handleCancel = async () => {
+    setCancellingId(confirmCancel);
     try {
-      await cancelReservation(id);
-      setToast({ message: 'Reserva cancelada', type: 'success' });
+      await deleteReservation(confirmCancel);
+      setToast({ message: 'Reserva eliminada', type: 'success' });
+      setConfirmCancel(null);
       onRefresh();
     } catch (err) {
-      setToast({ message: err.response?.data?.message || 'Error al cancelar', type: 'danger' });
+      setToast({ message: err.response?.data?.message || 'Error al eliminar', type: 'danger' });
     } finally {
       setCancellingId(null);
     }
@@ -38,7 +40,18 @@ const ReservationsManager = ({ reservations, onRefresh, setToast }) => {
   }
 
   return (
-    <div className="table-responsive">
+    <>
+      <ConfirmModal
+        isOpen={Boolean(confirmCancel)}
+        title="Eliminar reserva"
+        message="¿Querés eliminar esta reserva de forma permanente?"
+        confirmLabel="Eliminar reserva"
+        cancelLabel="Volver"
+        confirmVariant="warning"
+        onConfirm={handleCancel}
+        onCancel={() => setConfirmCancel(null)}
+      />
+      <div className="table-responsive">
       <table className="table table-hover align-middle">
         <thead>
           <tr>
@@ -75,8 +88,8 @@ const ReservationsManager = ({ reservations, onRefresh, setToast }) => {
                   </button>
                   <button
                     className="btn btn-sm btn-outline-danger"
-                    title="Cancelar"
-                    onClick={() => handleCancel(res._id)}
+                    title="Eliminar"
+                    onClick={() => setConfirmCancel(res._id)}
                     disabled={cancellingId === res._id}
                   >
                     {cancellingId === res._id ? (
@@ -91,7 +104,8 @@ const ReservationsManager = ({ reservations, onRefresh, setToast }) => {
           ))}
         </tbody>
       </table>
-    </div>
+      </div>
+    </>
   );
 };
 

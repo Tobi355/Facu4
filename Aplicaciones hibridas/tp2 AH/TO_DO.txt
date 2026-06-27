@@ -1,10 +1,14 @@
-acciones como borrar o confirmqr reservas desde dashboard no funcionan.
-a la home le faltan como minimo dos secciones mas para complementar la pagina, como por ejemplo una seccion de "sobre nosotros" y otra de "contacto".
-quiero una imagen que complemente esta parte:
-"<div className="hero-circle-inner">
-    <span className="hero-circle-text">Harmony</span>
-</div>"
-quiero toast notifications donde hagan falta con funcionalidad y diseño acorde a la pagina
-no tengo footer, hay que tener uno zcorde a la pagina
-al reservar una clase, no se muestra un mensaje de confirmacion de reserva,no te deja elegir horarios ni tampoco hay mensaje de confirmacion, hay que hacer eso
-implementar favicon en cada vista en la pagina
+eliminar imagen de la hero section
+arreglar toast de confirm al mandar msj de contacto
+verificar links del footer
+agregar una clase mas para igualdad (6) de cards en la seccion de servicios
+arreglar modal de detalle de clase
+poner resumen general con graficos antiguo en el dashboard de admin
+arreglar modal al eliminar reserva o clases
+verificar responsividad de la pagina
+verificar ports de local host
+verificar funcionamiento general al intentar instalar e iniciar el proyecto
+ver de que la conexion a la db este bien configurada y que se pueda conectar a la db
+arreglar e implementar bien el readme
+eliminar comentarios
+comparar proyecto comleto con consigna 

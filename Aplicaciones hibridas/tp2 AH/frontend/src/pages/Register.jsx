@@ -8,7 +8,7 @@ import Toast from '../components/Toast';
 const Register = () => {
   const [form, setForm] = useState({ name: '', email: '', phone: '', password: '', confirmPassword: '' });
   const [errors, setErrors] = useState({});
-  const [serverError, setServerError] = useState('');
+  const [toast, setToast] = useState({ message: '', type: '' });
   const [loading, setLoading] = useState(false);
   const { register } = useAuth();
   const navigate = useNavigate();
@@ -36,14 +36,15 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setServerError('');
+    setToast({ message: '', type: '' });
     if (!validate()) return;
     setLoading(true);
     try {
       await register(form.name, form.email, form.password, form.phone);
+      setToast({ message: 'Cuenta creada correctamente', type: 'success' });
       navigate('/');
     } catch (err) {
-      setServerError(err.response?.data?.message || 'Error al registrarse');
+      setToast({ message: err.response?.data?.message || 'Error al registrarse', type: 'danger' });
     } finally {
       setLoading(false);
     }
@@ -56,7 +57,7 @@ const Register = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <Toast message={serverError} type="danger" onClose={() => setServerError('')} />
+      <Toast message={toast.message} type={toast.type} onClose={() => setToast({ message: '', type: '' })} />
       <div className="row justify-content-center" style={{ minHeight: '80vh' }}>
         <div className="col-md-5 d-flex align-items-center">
           <div className="w-100">

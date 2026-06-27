@@ -3,10 +3,12 @@ import { Users, Trash2, Plus, UserPlus } from 'lucide-react';
 import { updateUser, deleteUser } from '../../services/userService';
 import { register } from '../../services/authService';
 import EmptyState from '../EmptyState';
+import ConfirmModal from '../ConfirmModal';
 
 const UsersManager = ({ users, onRefresh, setToast }) => {
   const [showCreate, setShowCreate] = useState(false);
   const [newUser, setNewUser] = useState({ name: '', email: '', password: '', phone: '' });
+  const [confirmDelete, setConfirmDelete] = useState(null);
 
   const handleRoleChange = async (userId, newRole) => {
     try {
@@ -18,11 +20,11 @@ const UsersManager = ({ users, onRefresh, setToast }) => {
     }
   };
 
-  const handleDeleteUser = async (id) => {
-    if (!window.confirm('¿Eliminar este usuario?')) return;
+  const handleDeleteUser = async () => {
     try {
-      await deleteUser(id);
+      await deleteUser(confirmDelete);
       setToast({ message: 'Usuario eliminado', type: 'success' });
+      setConfirmDelete(null);
       onRefresh();
     } catch {
       setToast({ message: 'Error al eliminar', type: 'danger' });
@@ -130,6 +132,17 @@ const UsersManager = ({ users, onRefresh, setToast }) => {
         </form>
       )}
 
+      <ConfirmModal
+        isOpen={Boolean(confirmDelete)}
+        title="Eliminar usuario"
+        message="¿Querés eliminar este usuario?"
+        confirmLabel="Eliminar"
+        cancelLabel="Cancelar"
+        confirmVariant="danger"
+        onConfirm={handleDeleteUser}
+        onCancel={() => setConfirmDelete(null)}
+      />
+
       {users.length === 0 ? (
         <EmptyState icon={Users} title="Sin usuarios" description="No hay usuarios registrados aún." />
       ) : (
@@ -166,7 +179,7 @@ const UsersManager = ({ users, onRefresh, setToast }) => {
                         <option value="user">user</option>
                         <option value="admin">admin</option>
                       </select>
-                      <button className="btn btn-sm btn-outline-danger" title="Eliminar" onClick={() => handleDeleteUser(u._id)}>
+                      <button className="btn btn-sm btn-outline-danger" title="Eliminar" onClick={() => setConfirmDelete(u._id)}>
                         <Trash2 size={14} />
                       </button>
                     </div>

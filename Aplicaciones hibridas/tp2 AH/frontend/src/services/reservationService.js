@@ -20,6 +20,8 @@ export const updateReservation = async (id, updates) => {
   return data.reservation;
 };
 
-export const cancelReservation = async (id) => {
+export const deleteReservation = async (id) => {
   await API.delete(`/reservations/${id}`);
 };
+
+export const cancelReservation = deleteReservation;

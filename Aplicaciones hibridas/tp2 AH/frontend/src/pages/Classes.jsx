@@ -8,6 +8,8 @@ import Loader from '../components/Loader';
 import Skeleton from '../components/Skeleton';
 import EmptyState from '../components/EmptyState';
 import Toast from '../components/Toast';
+import ReservationModal from '../components/ReservationModal';
+import { buildReservationDate } from '../utils/reservationUtils';
 import { BookOpen, Clock, User, Calendar, DollarSign, Users, Eye } from 'lucide-react';
 
 const DAYS_ES = {
@@ -18,7 +20,9 @@ const DAYS_ES = {
 const Classes = () => {
   const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [bookingId, setBookingId] = useState(null);
+  const [booking, setBooking] = useState(false);
+  const [selectedClass, setSelectedClass] = useState(null);
+  const [showModal, setShowModal] = useState(false);
   const [toast, setToast] = useState({ message: '', type: '' });
   const { user } = useAuth();
 
@@ -27,7 +31,7 @@ const Classes = () => {
       const classesData = await getAllClasses();
       setClasses(classesData);
     } catch {
-      setToast({ message: 'Error al cargar las clases', type: 'danger' });
+      setToast({ message: 'No se pudieron cargar las clases', type: 'danger' });
     } finally {
       setLoading(false);
     }
@@ -37,40 +41,38 @@ const Classes = () => {
     fetchClasses();
   }, [fetchClasses]);
 
-  const handleReserve = async (classId) => {
+  const handleOpenReserve = (cls) => {
     if (!user) {
-      setToast({ message: 'Debés iniciar sesión para reservar', type: 'warning' });
+      setToast({ message: 'Ingresá a tu cuenta para reservar', type: 'warning' });
       return;
     }
-    setBookingId(classId);
+    setSelectedClass(cls);
+    setShowModal(true);
+  };
+
+  const handleConfirmReservation = async (classId, schedule) => {
+    setBooking(true);
     try {
-      await createReservation(classId, new Date().toISOString());
-      setToast({ message: '¡Reserva confirmada!', type: 'success' });
-      fetchClasses();
+      const date = buildReservationDate(schedule);
+      await createReservation(classId, date);
+      setToast({ message: 'Reserva creada con éxito', type: 'success' });
+      setShowModal(false);
+      await fetchClasses();
     } catch (err) {
-      setToast({ message: err.response?.data?.message || 'Error al reservar', type: 'danger' });
+      setToast({ message: err.response?.data?.message || 'No se pudo crear la reserva', type: 'danger' });
     } finally {
-      setBookingId(null);
+      setBooking(false);
     }
   };
 
   if (loading) return <Loader><Skeleton type="card" count={6} /></Loader>;
 
   return (
-    <motion.div
-      className="container py-5"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.4 }}
-    >
+    <motion.div className="container py-5" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4 }}>
       <Toast message={toast.message} type={toast.type} onClose={() => setToast({ message: '', type: '' })} />
 
       <div className="text-center mb-5">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-        >
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
           <div className="feature-icon mb-2 text-primary">
             <BookOpen size={36} />
           </div>
@@ -80,21 +82,11 @@ const Classes = () => {
       </div>
 
       {classes.length === 0 ? (
-        <EmptyState
-          icon={BookOpen}
-          title="No hay clases disponibles"
-          description="Pronto agregaremos nuevas clases. Volvé a consultar más tarde."
-        />
+        <EmptyState icon={BookOpen} title="No hay clases disponibles" description="Pronto agregaremos nuevas clases. Volvé a consultar más tarde." />
       ) : (
         <div className="row g-4">
           {classes.map((cls, i) => (
-            <motion.div
-              className="col-md-6 col-lg-4"
-              key={cls._id}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1, duration: 0.5 }}
-            >
+            <motion.div className="col-md-6 col-lg-4" key={cls._id} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08, duration: 0.5 }}>
               <div className="class-card card border-0 h-100">
                 <div className="class-bg-shape" style={{ background: `linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)` }} />
                 <div className="card-body p-4 d-flex flex-column position-relative">
@@ -116,9 +108,7 @@ const Classes = () => {
                     </div>
                     <div className="d-flex align-items-center gap-2 mb-1">
                       <Calendar size={14} className="text-muted" />
-                      <span className="small">
-                        {cls.schedule?.map((s) => DAYS_ES[s.day] || s.day).join(', ')}
-                      </span>
+                      <span className="small">{cls.schedule?.map((s) => DAYS_ES[s.day] || s.day).join(', ')}</span>
                     </div>
                     <div className="d-flex align-items-center gap-2">
                       <Users size={14} className="text-muted" />
@@ -127,23 +117,13 @@ const Classes = () => {
                   </div>
                   <div className="d-flex justify-content-between align-items-center mt-auto gap-2">
                     <div className="progress" style={{ height: 6, width: '40%', borderRadius: 3 }}>
-                      <div
-                        className="progress-bar bg-primary"
-                        style={{ width: `${Math.min((cls.enrolledCount / cls.capacity) * 100, 100)}%` }}
-                      />
+                      <div className="progress-bar bg-primary" style={{ width: `${Math.min((cls.enrolledCount / cls.capacity) * 100, 100)}%` }} />
                     </div>
-                    <Link
-                      to={`/classes/${cls._id}`}
-                      className="btn btn-outline-primary btn-sm rounded-pill px-3"
-                    >
+                    <Link to={`/classes/${cls._id}`} className="btn btn-outline-primary btn-sm rounded-pill px-3">
                       <Eye size={14} className="me-1" />Detalle
                     </Link>
-                    <button
-                      className="btn btn-primary btn-sm rounded-pill px-4"
-                      onClick={() => handleReserve(cls._id)}
-                      disabled={bookingId === cls._id || cls.enrolledCount >= cls.capacity}
-                    >
-                      {bookingId === cls._id ? (
+                    <button className="btn btn-primary btn-sm rounded-pill px-4" onClick={() => handleOpenReserve(cls)} disabled={booking || cls.enrolledCount >= cls.capacity}>
+                      {booking ? (
                         <span className="d-flex align-items-center gap-1">
                           <span className="spinner-border spinner-border-sm" />
                           Reservando...
@@ -160,6 +140,16 @@ const Classes = () => {
             </motion.div>
           ))}
         </div>
+      )}
+
+      {selectedClass && (
+        <ReservationModal
+          cls={selectedClass}
+          isOpen={showModal}
+          onConfirm={handleConfirmReservation}
+          onCancel={() => setShowModal(false)}
+          loading={booking}
+        />
       )}
     </motion.div>
   );

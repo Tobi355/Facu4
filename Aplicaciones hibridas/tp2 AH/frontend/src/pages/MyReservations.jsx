@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { getMyReservations, cancelReservation, updateReservation } from '../services/reservationService';
+import { getMyReservations, deleteReservation, updateReservation } from '../services/reservationService';
 import Loader from '../components/Loader';
 import Skeleton from '../components/Skeleton';
 import EmptyState from '../components/EmptyState';
 import Toast from '../components/Toast';
 import { Calendar, Clock, User, XCircle, CalendarDays, Edit3, Save } from 'lucide-react';
+import ConfirmModal from '../components/ConfirmModal';
 
 const MyReservations = () => {
   const [reservations, setReservations] = useState([]);
@@ -15,6 +16,7 @@ const MyReservations = () => {
   const [editingId, setEditingId] = useState(null);
   const [editDate, setEditDate] = useState('');
   const [toast, setToast] = useState({ message: '', type: '' });
+  const [confirmCancel, setConfirmCancel] = useState(null);
 
   const fetchReservations = useCallback(async () => {
     try {
@@ -31,15 +33,15 @@ const MyReservations = () => {
     fetchReservations();
   }, [fetchReservations]);
 
-  const handleCancel = async (id) => {
-    if (!window.confirm('¿Cancelar esta reserva?')) return;
-    setCancellingId(id);
+  const handleCancel = async () => {
+    setCancellingId(confirmCancel);
     try {
-      await cancelReservation(id);
-      setToast({ message: 'Reserva cancelada', type: 'success' });
+      await deleteReservation(confirmCancel);
+      setToast({ message: 'Reserva eliminada', type: 'success' });
+      setConfirmCancel(null);
       fetchReservations();
     } catch (err) {
-      setToast({ message: err.response?.data?.message || 'Error al cancelar', type: 'danger' });
+      setToast({ message: err.response?.data?.message || 'Error al eliminar', type: 'danger' });
     } finally {
       setCancellingId(null);
     }
@@ -76,6 +78,16 @@ const MyReservations = () => {
       transition={{ duration: 0.4 }}
     >
       <Toast message={toast.message} type={toast.type} onClose={() => setToast({ message: '', type: '' })} />
+      <ConfirmModal
+        isOpen={Boolean(confirmCancel)}
+        title="Eliminar reserva"
+        message="¿Querés eliminar esta reserva de forma permanente?"
+        confirmLabel="Eliminar reserva"
+        cancelLabel="Volver"
+        confirmVariant="warning"
+        onConfirm={handleCancel}
+        onCancel={() => setConfirmCancel(null)}
+      />
 
       <div className="text-center mb-5">
         <motion.div
@@ -175,18 +187,18 @@ const MyReservations = () => {
                       </button>
                       <button
                         className="btn btn-outline-danger btn-sm rounded-pill"
-                        onClick={() => handleCancel(res._id)}
+                        onClick={() => setConfirmCancel(res._id)}
                         disabled={cancellingId === res._id}
                       >
                         {cancellingId === res._id ? (
                           <span className="d-flex align-items-center gap-1">
                             <span className="spinner-border spinner-border-sm" />
-                            Cancelando...
+                            Eliminando...
                           </span>
                         ) : (
                           <span className="d-flex align-items-center gap-1">
                             <XCircle size={14} />
-                            Cancelar
+                            Eliminar
                           </span>
                         )}
                       </button>

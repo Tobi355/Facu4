@@ -30,7 +30,8 @@ const create = async (req, res, next) => {
 
 const cancel = async (req, res, next) => {
   try {
-    const reservation = await reservationService.cancel(req.params.id, req.user._id);
+    const isAdmin = req.user?.role === 'admin';
+    const reservation = await reservationService.deleteReservation(req.params.id, req.user._id, isAdmin);
     res.json({ success: true, reservation });
   } catch (error) {
     next(error);

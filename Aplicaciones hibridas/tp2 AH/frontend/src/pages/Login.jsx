@@ -8,7 +8,7 @@ import Toast from '../components/Toast';
 const Login = () => {
   const [form, setForm] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({});
-  const [serverError, setServerError] = useState('');
+  const [toast, setToast] = useState({ message: '', type: '' });
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -32,14 +32,15 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setServerError('');
+    setToast({ message: '', type: '' });
     if (!validate()) return;
     setLoading(true);
     try {
       await login(form.email, form.password);
+      setToast({ message: 'Inicio de sesión exitoso', type: 'success' });
       navigate('/');
     } catch (err) {
-      setServerError(err.response?.data?.message || 'Error al iniciar sesión');
+      setToast({ message: err.response?.data?.message || 'Error al iniciar sesión', type: 'danger' });
     } finally {
       setLoading(false);
     }
@@ -52,7 +53,7 @@ const Login = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <Toast message={serverError} type="danger" onClose={() => setServerError('')} />
+      <Toast message={toast.message} type={toast.type} onClose={() => setToast({ message: '', type: '' })} />
       <div className="row justify-content-center" style={{ minHeight: '80vh' }}>
         <div className="col-md-5 d-flex align-items-center">
           <div className="w-100">

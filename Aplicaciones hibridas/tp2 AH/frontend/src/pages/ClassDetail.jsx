@@ -7,7 +7,8 @@ import { createReservation } from '../services/reservationService';
 import Loader from '../components/Loader';
 import Toast from '../components/Toast';
 import ReservationModal from '../components/ReservationModal';
-import { BookOpen, Clock, User, Calendar, DollarSign, Users, ArrowLeft, MapPin } from 'lucide-react';
+import { buildReservationDate } from '../utils/reservationUtils';
+import { BookOpen, Clock, User, Calendar, DollarSign, Users, ArrowLeft } from 'lucide-react';
 
 const DAYS_ES = {
   Monday: 'Lunes', Tuesday: 'Martes', Wednesday: 'Miércoles',
@@ -34,14 +35,15 @@ const ClassDetail = () => {
         }
         setCls(data);
       } catch {
-        setToast({ message: 'Error al cargar la clase', type: 'danger' });
+        setToast({ message: 'No se pudo cargar la clase', type: 'danger' });
       } finally {
         setLoading(false);
       }
     };
     fetchClass();
   }, [id]);
-() => {
+
+  const handleOpenReserve = () => {
     if (!user) {
       navigate('/login');
       return;
@@ -49,16 +51,16 @@ const ClassDetail = () => {
     setShowModal(true);
   };
 
-  const handleConfirmReservation = async (classId, date) => {
+  const handleConfirmReservation = async (classId, schedule) => {
     setBooking(true);
     try {
+      const date = buildReservationDate(schedule);
       await createReservation(classId, date);
-      setToast({ message: '¡Reserva confirmada! Revisa tu email para los detalles.', type: 'success' });
+      setToast({ message: 'Reserva creada con éxito', type: 'success' });
       setShowModal(false);
-      setTimeout(() => navigate('/my-reservations'), 2000,);
-      setToast({ message: '¡Reserva confirmada!', type: 'success' });}
-    catch (err) {
-      setToast({ message: err.response?.data?.message || 'Error al reservar', type: 'danger' });
+      setTimeout(() => navigate('/my-reservations'), 1200);
+    } catch (err) {
+      setToast({ message: err.response?.data?.message || 'No se pudo completar la reserva', type: 'danger' });
     } finally {
       setBooking(false);
     }
@@ -80,24 +82,14 @@ const ClassDetail = () => {
   const pct = cls.capacity > 0 ? Math.round((cls.enrolledCount / cls.capacity) * 100) : 0;
 
   return (
-    <motion.div
-      className="container py-5"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.4 }}
-    >
+    <motion.div className="container py-5" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4 }}>
       <Toast message={toast.message} type={toast.type} onClose={() => setToast({ message: '', type: '' })} />
 
       <Link to="/classes" className="btn btn-sm btn-outline-primary rounded-pill mb-4">
         <ArrowLeft size={16} className="me-1" />Volver a Clases
       </Link>
 
-      <motion.div
-        className="row g-4"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-      >
+      <motion.div className="row g-4" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
         <div className="col-lg-8">
           <div className="card border-0 p-4 h-100">
             <div className="d-flex align-items-center gap-2 mb-1">
@@ -169,10 +161,7 @@ const ClassDetail = () => {
               <label className="small text-muted mb-1">Ocupación</label>
               <div className="d-flex align-items-center gap-3">
                 <div className="progress flex-grow-1" style={{ height: 10, borderRadius: 5 }}>
-                  <div
-                    className={`progress-bar ${pct >= 80 ? 'bg-danger' : pct >= 50 ? 'bg-warning' : 'bg-success'}`}
-                    style={{ width: `${pct}%` }}
-                  />
+                  <div className={`progress-bar ${pct >= 80 ? 'bg-danger' : pct >= 50 ? 'bg-warning' : 'bg-success'}`} style={{ width: `${pct}%` }} />
                 </div>
                 <span className="fw-semibold">{pct}%</span>
               </div>
@@ -184,16 +173,10 @@ const ClassDetail = () => {
           <div className="card border-0 p-4">
             <h5 className="fw-semibold mb-3">Reservá esta clase</h5>
             <p className="small text-muted mb-3">
-              {isFull
-                ? 'Esta clase está completa. Consultá otras opciones disponibles.'
-                : 'Reservá tu lugar y empezá a disfrutar de esta clase.'}
+              {isFull ? 'Esta clase está completa. Consultá otras opciones disponibles.' : 'Reservá tu lugar y empezá a disfrutar de esta clase.'}
             </p>
             {user ? (
-              <button
-                className="btn btn-primary w-100 btn-lg rounded-pill"
-                onClick={handleReserve}
-                disabled={booking || isFull}
-              >
+              <button className="btn btn-primary w-100 btn-lg rounded-pill" onClick={handleOpenReserve} disabled={booking || isFull}>
                 {booking ? (
                   <span className="d-flex align-items-center justify-content-center gap-2">
                     <span className="spinner-border spinner-border-sm" />
@@ -210,18 +193,11 @@ const ClassDetail = () => {
                 Iniciar Sesión para Reservar
               </Link>
             )}
-            {user && !isFull && (
-              <p className="text-center mt-2 mb-0">
-                <small className="text-muted">
-                  Quedan {cls.capacity - cls.enrolledCount} cupos disponibles
-                </small>
-              </p>
-            )}
+            {user && !isFull && <p className="text-center mt-2 mb-0"><small className="text-muted">Quedan {cls.capacity - cls.enrolledCount} cupos disponibles</small></p>}
           </div>
         </div>
       </motion.div>
 
-      {/* Reservation Modal */}
       {cls && (
         <ReservationModal
           cls={cls}

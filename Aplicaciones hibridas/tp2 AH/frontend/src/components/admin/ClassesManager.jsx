@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Edit3, Plus, Trash2, XCircle, CheckCircle, BookOpen } from 'lucide-react';
 import { createClass, updateClass, deleteClass } from '../../services/classService';
 import EmptyState from '../EmptyState';
+import ConfirmModal from '../ConfirmModal';
 
 const DAYS_ES = {
   Monday: 'Lunes', Tuesday: 'Martes', Wednesday: 'Miércoles',
@@ -18,6 +19,7 @@ const emptyClass = {
 const ClassesManager = ({ classes, onRefresh, setToast }) => {
   const [editingClass, setEditingClass] = useState(null);
   const [form, setForm] = useState(emptyClass);
+  const [confirmDelete, setConfirmDelete] = useState(null);
 
   const handleEditClass = (cls) => {
     setEditingClass(cls._id);
@@ -85,11 +87,11 @@ const ClassesManager = ({ classes, onRefresh, setToast }) => {
     }
   };
 
-  const handleDeleteClass = async (id) => {
-    if (!window.confirm('¿Eliminar esta clase?')) return;
+  const handleDeleteClass = async () => {
     try {
-      await deleteClass(id);
+      await deleteClass(confirmDelete);
       setToast({ message: 'Clase eliminada', type: 'success' });
+      setConfirmDelete(null);
       onRefresh();
     } catch (err) {
       setToast({ message: err.response?.data?.message || 'Error al eliminar', type: 'danger' });
@@ -216,6 +218,17 @@ const ClassesManager = ({ classes, onRefresh, setToast }) => {
         </form>
       )}
 
+      <ConfirmModal
+        isOpen={Boolean(confirmDelete)}
+        title="Eliminar clase"
+        message="¿Querés eliminar esta clase? Esta acción también cancelará las reservas confirmadas asociadas."
+        confirmLabel="Eliminar"
+        cancelLabel="Cancelar"
+        confirmVariant="danger"
+        onConfirm={handleDeleteClass}
+        onCancel={() => setConfirmDelete(null)}
+      />
+
       {classes.length > 0 && (
         <div className="table-responsive">
           <table className="table table-hover align-middle">
@@ -263,7 +276,7 @@ const ClassesManager = ({ classes, onRefresh, setToast }) => {
                         <button className={`btn btn-sm ${cls.isActive ? 'btn-outline-warning' : 'btn-outline-success'}`} title={cls.isActive ? 'Desactivar' : 'Activar'} onClick={() => handleToggleActive(cls)}>
                           {cls.isActive ? <XCircle size={14} /> : <CheckCircle size={14} />}
                         </button>
-                        <button className="btn btn-sm btn-outline-danger" title="Eliminar" onClick={() => handleDeleteClass(cls._id)}>
+                        <button className="btn btn-sm btn-outline-danger" title="Eliminar" onClick={() => setConfirmDelete(cls._id)}>
                           <Trash2 size={14} />
                         </button>
                       </div>

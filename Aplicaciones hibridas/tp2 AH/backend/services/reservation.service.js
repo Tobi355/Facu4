@@ -44,17 +44,21 @@ const create = async (userId, classId, date) => {
   return reservation.populate('class');
 };
 
-const cancel = async (reservationId, userId) => {
-  const reservation = await Reservation.findOne({
-    _id: reservationId,
-    user: userId,
-    status: 'confirmed',
-  });
-  if (!reservation) throw new AppError('Reservation not found or already cancelled.', 404);
+const deleteReservation = async (reservationId, userId, isAdmin = false) => {
+  const query = { _id: reservationId };
+  if (!isAdmin) {
+    query.user = userId;
+  }
 
-  reservation.status = 'cancelled';
-  await reservation.save();
+  const reservation = await Reservation.findOne(query);
+  if (!reservation) throw new AppError('Reservation not found.', 404);
 
+  if (reservation.status === 'confirmed') {
+    const ClassModel = mongoose.model('Class');
+    await ClassModel.findByIdAndUpdate(reservation.class, { $inc: { enrolledCount: -1 } });
+  }
+
+  await Reservation.deleteOne({ _id: reservationId });
   return reservation;
 };
 
@@ -96,4 +100,4 @@ const update = async (reservationId, userId, updates) => {
   return (await reservation.populate('class')).populate('user', 'name email');
 };
 
-module.exports = { getUserReservations, getAllReservations, create, cancel, update };
+module.exports = { getUserReservations, getAllReservations, create, deleteReservation, update };

@@ -55,7 +55,7 @@ const Navbar = () => {
                 </li>
                 {isAdmin && (
                   <li className="nav-item">
-                    <Link className="nav-link d-flex align-items-center gap-1" to="/admin">
+                    <Link className="nav-link d-flex align-items-center gap-1 link-light border-bottom border-white" to="/admin">
                       <LayoutDashboard size={15} /> Dashboard
                     </Link>
                   </li>
