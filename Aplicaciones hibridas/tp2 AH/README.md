@@ -9,8 +9,6 @@ cd backend
 cp .env.example .env
 
 npm install
-
-# 5. Cargar datos iniciales (admin + clases de ejemplo)
 npm run seed
 
 # 6. Iniciar servidor en modo desarrollo
@@ -25,6 +23,7 @@ npm run dev
 cd frontend
 
 # 2. (Opcional) Editar .env si el backend está en otro puerto/host
+cp .env.example .env
 # Default: REACT_APP_API_URL=http://localhost:5000/api
 
 # 3. Instalar dependencias
