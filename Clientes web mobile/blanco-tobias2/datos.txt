@@ -1,0 +1,9 @@
+-Carrera: Diseño web
+-materia: Clientes web mobile
+-cuatrimestre: 4to cuatrimestre
+-año: 2026
+-turno: mañana
+-comisión: DWM4AV
+-apellido y nombre: Blanco Tobias
+-docente:  Gallino Santiago
+-carácter de entrega (recuperatorio del 2do parcial)
