@@ -28,6 +28,14 @@
                                 <span class="dropdown-icon">👤</span>
                                 <span>Mi Perfil</span>
                             </a>
+                            <a href="{{ route('checkout.index') }}">
+                                <span class="dropdown-icon">🛒</span>
+                                <span>Ver carrito</span>
+                            </a>
+                            <a href="{{ route('orders.index') }}">
+                                <span class="dropdown-icon">👜</span>
+                                <span>Mis compras</span>
+                            </a>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit">

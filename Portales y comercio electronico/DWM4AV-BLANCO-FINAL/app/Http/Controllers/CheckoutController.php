@@ -4,11 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Services\MercadoPagoService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class CheckoutController extends Controller
 {
+    private MercadoPagoService $mercadoPago;
+
+    public function __construct(MercadoPagoService $mercadoPago)
+    {
+        $this->mercadoPago = $mercadoPago;
+    }
+
     public function index()
     {
         $cart = session()->get('cart', []);
@@ -28,46 +36,44 @@ class CheckoutController extends Controller
             return redirect()->route('cart.index');
         }
 
-        $total = $this->calcularTotal($cart);
+        $order = DB::transaction(function () use ($cart) {
 
-        $order = DB::transaction(function () use ($cart, $total) {
+            $total = collect($cart)->sum(function ($item) {
+                return $item['precio'] * $item['quantity'];
+            });
 
             $order = Order::create([
                 'user_id' => Auth::id(),
                 'total' => $total,
-                'status' => 'pending',
+                'status' => 'pending'
             ]);
 
-            $this->crearItems($order, $cart);
+            foreach ($cart as $item) {
+
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'servicio_id' => $item['id'],
+                    'quantity' => $item['quantity'],
+                    'price' => $item['precio'],
+                    'subtotal' => $item['precio'] * $item['quantity']
+                ]);
+
+            }
 
             return $order;
+
         });
+
+        $order->load('items.servicio');
+
+        $preference = $this->mercadoPago->createPreference($order);
+
+        $order->update([
+            'preference_id' => $preference->id
+        ]);
 
         session()->forget('cart');
 
-        return redirect()
-            ->route('home')
-            ->with('success', 'Orden creada correctamente.');
-    }
-
-    private function calcularTotal(array $cart): float
-    {
-        return collect($cart)->sum(function ($item) {
-            return $item['precio'] * $item['quantity'];
-        });
-    }
-    private function crearItems(Order $order, array $cart): void
-    {
-        foreach ($cart as $item) {
-
-            OrderItem::create([
-                'order_id'    => $order->id,
-                'servicio_id' => $item['id'],
-                'quantity'    => $item['quantity'],
-                'price'       => $item['precio'],
-                'subtotal'    => $item['precio'] * $item['quantity'],
-            ]);
-
-        }
+        return redirect($preference->init_point);
     }
 }

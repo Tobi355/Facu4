@@ -12,6 +12,9 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\AdminOrderController;
+
+
 
 Route::get('/', [ServicioController::class, 'home'])->name('home');
 Route::get('/servicios', [ServicioController::class, 'publicIndex'])->name('servicios.index');
@@ -19,6 +22,11 @@ Route::get('/servicios/{servicio}', [ServicioController::class, 'show'])->name('
 Route::view('/nosotros', 'nosotros')->name('nosotros');
 Route::view('/contacto', 'contacto')->name('contacto');
 Route::post('/contacto', [ContactController::class, 'store'])->name('contacto.store');
+
+Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->group(function () {
+        Route::resource('orders', AdminOrderController::class)
+            ->only(['index','show']);
+    });
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -38,7 +46,20 @@ Route::middleware('guest')->group(function () {
         Route::get('/payment/success', [PaymentController::class,'success'])->name('payment.success');
         Route::get('/payment/pending', [PaymentController::class,'pending'])->name('payment.pending');
         Route::get('/payment/failure', [PaymentController::class,'failure'])->name('payment.failure');
-});
+        Route::get('/carrito', [CartController::class, 'index'])->name('cart.index');
+        Route::post('/carrito/agregar/{servicio}', [CartController::class, 'add'])->name('cart.add');
+        Route::post('/carrito/eliminar/{id}', [CartController::class, 'remove'])->name('cart.remove');
+        Route::post('/carrito/vaciar', [CartController::class, 'clear'])->name('cart.clear');
+        Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+        Route::post('/checkout/procesar', [CheckoutController::class, 'store'])->name('checkout.store');
+        Route::get('/mis-compras', [OrderController::class,'index'])->name('orders.index');
+        Route::get('/mis-compras/{order}', [OrderController::class,'show'])->name('orders.show');
+        Route::get('/mis-compras', [OrderController::class, 'index'])->name('orders.index');
+        Route::get('/mis-compras/{order}', [OrderController::class, 'show'])->name('orders.show');
+        Route::get('/payment/success', [PaymentController::class,'success'])->name('payment.success');
+        Route::get('/payment/pending', [PaymentController::class,'pending'])->name('payment.pending');
+        Route::get('/payment/failure', [PaymentController::class,'failure'])->name('payment.failure');
+    });
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::resource('servicios', ServicioController::class)->except(['show']);
@@ -55,32 +76,3 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::patch('contactos/{contactMessage}/estado', [AdminController::class, 'cambiarEstadoContacto'])->name('contactos.estado');
     Route::delete('contactos/{contactMessage}', [AdminController::class, 'destroyContacto'])->name('contactos.destroy');
     });
-
-Route::middleware('auth')->group(function () {
-
-    Route::get('/carrito', [CartController::class, 'index'])->name('cart.index');
-
-    Route::post('/carrito/agregar/{servicio}', [CartController::class, 'add'])->name('cart.add');
-
-    Route::post('/carrito/eliminar/{id}', [CartController::class, 'remove'])->name('cart.remove');
-
-    Route::post('/carrito/vaciar', [CartController::class, 'clear'])->name('cart.clear');
-
-    });
-
-Route::middleware('auth')->group(function () {
-
-    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
-
-    Route::post('/checkout/procesar', [CheckoutController::class, 'store'])->name('checkout.store');
-
-});
-Route::middleware('auth')->group(function () {
-
-    Route::get('/mis-compras', [OrderController::class,'index'])
-        ->name('orders.index');
-
-    Route::get('/mis-compras/{order}', [OrderController::class,'show'])
-        ->name('orders.show');
-
-});

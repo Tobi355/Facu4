@@ -22,6 +22,7 @@
                     <li><a href="{{ route('admin.usuarios') }}" class="{{ request()->routeIs('admin.usuarios*') ? 'active' : '' }}">Usuarios</a></li>
                     <li><a href="{{ route('admin.reservas') }}" class="{{ request()->routeIs('admin.reservas') ? 'active' : '' }}">Reservas</a></li>
                     <li><a href="{{ route('admin.contactos') }}" class="{{ request()->routeIs('admin.contactos') ? 'active' : '' }}">Contactos</a></li>
+                    <li><a href="{{ route('admin.orders.index') }}" class="{{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">Órdenes</a></li>
                 </ul>
             </nav>
         </aside>
