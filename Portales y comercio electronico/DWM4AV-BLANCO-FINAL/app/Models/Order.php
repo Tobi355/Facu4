@@ -17,7 +17,6 @@ class Order extends Model
         'preference_id',
         'payment_status',
         'paid_at',
-        'payment_type',
     ];
 
     protected $casts = [

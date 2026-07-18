@@ -6,85 +6,222 @@
 
 <div class="container py-5">
 
-    <h1>
+    <div class="d-flex justify-content-between align-items-center mb-4">
 
-        Compra #{{ $order->id }}
+        <div>
 
-    </h1>
+            <h1 class="fw-bold">
 
-    <hr>
+                Compra #{{ $order->id }}
 
-    <p>
+            </h1>
 
-        <strong>Estado:</strong>
+            <p class="text-muted mb-0">
 
-        {{ ucfirst($order->status) }}
+                Realizada el {{ $order->created_at->format('d/m/Y H:i') }}
 
-    </p>
+            </p>
 
-    <p>
+        </div>
 
-        <strong>Total:</strong>
+        <a
+            href="{{ route('orders.index') }}"
+            class="btn btn-outline-secondary">
 
-        ${{ number_format($order->total,0,',','.') }}
+            ← Volver
 
-    </p>
+        </a>
 
-    <table class="table">
+    </div>
 
-        <thead>
+    <div class="row mb-4">
 
-        <tr>
+        <div class="col-md-6">
 
-            <th>Servicio</th>
+            <div class="card shadow-sm">
 
-            <th>Cantidad</th>
+                <div class="card-body">
 
-            <th>Precio</th>
+                    <h5 class="card-title">
 
-            <th>Subtotal</th>
+                        Estado de la orden
 
-        </tr>
+                    </h5>
 
-        </thead>
+                    @switch($order->status)
 
-        <tbody>
+                        @case('pending')
 
-        @foreach($order->items as $item)
+                            <span class="badge bg-warning text-dark fs-6">
 
-            <tr>
+                                Pendiente
 
-                <td>
+                            </span>
 
-                    {{ $item->servicio->nombre }}
+                            @break
 
-                </td>
+                        @case('paid')
 
-                <td>
+                            <span class="badge bg-success fs-6">
 
-                    {{ $item->quantity }}
+                                Pagada
 
-                </td>
+                            </span>
 
-                <td>
+                            @break
 
-                    ${{ number_format($item->price,0,',','.') }}
+                        @case('completed')
 
-                </td>
+                            <span class="badge bg-primary fs-6">
 
-                <td>
+                                Terminada
 
-                    ${{ number_format($item->subtotal,0,',','.') }}
+                            </span>
 
-                </td>
+                            @break
 
-            </tr>
+                        @case('failed')
 
-        @endforeach
+                            <span class="badge bg-danger fs-6">
 
-        </tbody>
+                                Fallida
 
-    </table>
+                            </span>
+
+                            @break
+
+                        @default
+
+                            <span class="badge bg-secondary fs-6">
+
+                                {{ ucfirst($order->status) }}
+
+                            </span>
+
+                    @endswitch
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-6">
+
+            <div class="card shadow-sm">
+
+                <div class="card-body">
+
+                    <h5 class="card-title">
+
+                        Total abonado
+
+                    </h5>
+
+                    <h2 class="text-success mb-0">
+
+                        ${{ number_format($order->total,0,',','.') }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card shadow-sm">
+
+        <div class="card-header">
+
+            <strong>Servicios contratados</strong>
+
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle mb-0">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th>Servicio</th>
+                        <th>Cantidad</th>
+                        <th>Precio unitario</th>
+                        <th>Subtotal</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                @foreach($order->items as $item)
+
+                    <tr>
+
+                        <td>
+
+                            {{ $item->servicio->nombre }}
+
+                        </td>
+
+                        <td>
+
+                            {{ $item->quantity }}
+
+                        </td>
+
+                        <td>
+
+                            ${{ number_format($item->price,0,',','.') }}
+
+                        </td>
+
+                        <td>
+
+                            <strong>
+
+                                ${{ number_format($item->subtotal,0,',','.') }}
+
+                            </strong>
+
+                        </td>
+
+                    </tr>
+
+                @endforeach
+
+                </tbody>
+
+                <tfoot>
+
+                    <tr>
+
+                        <th colspan="3" class="text-end">
+
+                            TOTAL
+
+                        </th>
+
+                        <th>
+
+                            ${{ number_format($order->total,0,',','.') }}
+
+                        </th>
+
+                    </tr>
+
+                </tfoot>
+
+            </table>
+
+        </div>
+
+    </div>
 
 </div>
 

@@ -14,7 +14,7 @@
 
     <p><strong>Email:</strong> {{ $order->user->email }}</p>
 
-    <p><strong>Estado:</strong> {{ ucfirst($order->status) }}</p>
+    <p><strong>Estado:</strong> {{ match(strtolower($order->status)) { 'pending' => 'Pendiente', 'paid' => 'Pagada', 'completed' => 'Terminada', 'failed' => 'Fallida', default => ucfirst($order->status) } }}</p>
 
     <p><strong>Total:</strong> ${{ number_format($order->total,0,',','.') }}</p>
 

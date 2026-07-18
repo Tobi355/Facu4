@@ -9,20 +9,53 @@ use App\Models\Reserva;
 use App\Models\ContactMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Order;
 
 class AdminController extends Controller
 {
     public function dashboard()
     {
         $totalUsuarios = User::count();
+
         $totalServicios = Servicio::where('activo', true)->count();
-        $totalReservas = Reserva::count();
+
         $totalCategorias = Categoria::count();
+
         $totalContactos = ContactMessage::where('estado', 'nuevo')->count();
-        $reservasRecientes = Reserva::with(['usuario', 'servicio'])->latest()->limit(5)->get();
+
+        // Reservas (se mantienen por compatibilidad con el TP2)
+        $totalReservas = Reserva::count();
+
+        // Órdenes
+        $totalOrdenes = Order::count();
+
+        $ordenesPendientes = Order::where('status', 'pending')->count();
+
+        $ordenesPagadas = Order::where('status', 'paid')->count();
+
+        $ordenesTerminadas = Order::where('status', 'completed')->count();
+
+        $facturacionTotal = Order::whereIn('status', ['paid', 'completed'])
+            ->sum('total');
+
+        $ultimasOrdenes = Order::with('user')
+            ->latest()
+            ->take(5)
+            ->get();
+
         return view('admin.dashboard', compact(
-            'totalUsuarios', 'totalServicios', 'totalReservas',
-            'totalCategorias', 'totalContactos', 'reservasRecientes'
+            'totalUsuarios',
+            'totalServicios',
+            'totalCategorias',
+            'totalContactos',
+            'totalReservas',
+
+            'totalOrdenes',
+            'ordenesPendientes',
+            'ordenesPagadas',
+            'ordenesTerminadas',
+            'facturacionTotal',
+            'ultimasOrdenes'
         ));
     }
 

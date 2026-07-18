@@ -7,6 +7,12 @@
         <div class="menu-toggle">
             <span></span><span></span><span></span>
         </div>
+        @php
+            $cart = session('cart', []);
+            $cartTotal = collect($cart)->sum(function ($item) {
+                return $item['precio'] * $item['quantity'];
+            });
+        @endphp
         <nav>
             <ul>
                 <li><a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">Inicio</a></li>
@@ -17,6 +23,12 @@
                     @if(Auth::user()->role === 'admin')
                         <li class="nav-admin"><a href="{{ route('admin.dashboard') }}">Admin</a></li>
                     @endif
+                    <li class="nav-cart">
+                        <a href="{{ route('checkout.index') }}">
+                                <span class="dropdown-icon">🛒</span>
+                                <span>Ver carrito</span>
+                            </a>
+                    </li>
                     <li class="nav-user-container">
                         <button type="button" class="nav-user-btn" id="nav-user-toggle">
                             <span class="nav-user-avatar">{{ substr(Auth::user()->name, 0, 1) }}</span>
@@ -27,10 +39,6 @@
                             <a href="{{ route('perfil.index') }}">
                                 <span class="dropdown-icon">👤</span>
                                 <span>Mi Perfil</span>
-                            </a>
-                            <a href="{{ route('checkout.index') }}">
-                                <span class="dropdown-icon">🛒</span>
-                                <span>Ver carrito</span>
                             </a>
                             <a href="{{ route('orders.index') }}">
                                 <span class="dropdown-icon">👜</span>

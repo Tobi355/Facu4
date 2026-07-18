@@ -38,7 +38,7 @@ class CartController extends Controller
         session()->put('cart', $cart);
 
         return redirect()
-            ->back()
+            ->route('checkout.index')
             ->with('success','Servicio agregado al carrito.');
     }
 

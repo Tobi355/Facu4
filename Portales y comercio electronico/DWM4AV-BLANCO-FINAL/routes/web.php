@@ -23,10 +23,11 @@ Route::view('/nosotros', 'nosotros')->name('nosotros');
 Route::view('/contacto', 'contacto')->name('contacto');
 Route::post('/contacto', [ContactController::class, 'store'])->name('contacto.store');
 
-Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->group(function () {
-        Route::resource('orders', AdminOrderController::class)
-            ->only(['index','show']);
-    });
+Route::prefix('admin')->middleware(['auth','role:admin'])->name('admin.')->group(function () {
+        Route::resource('orders', AdminOrderController::class)->only(['index','show','destroy']);
+        Route::patch('orders/{order}/paid',[AdminOrderController::class,'markAsPaid'])->name('orders.paid');
+        Route::patch('orders/{order}/completed',[AdminOrderController::class,'markAsCompleted'])->name('orders.completed');
+});
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');

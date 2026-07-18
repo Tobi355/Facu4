@@ -6,79 +6,185 @@
 
 <div class="container py-5">
 
-    <h1 class="mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
 
-        Mis Compras
+        <div>
 
-    </h1>
+            <h1 class="fw-bold mb-1">Mis Compras</h1>
+
+            <p class="text-muted mb-0">
+
+                Historial de todas tus órdenes.
+
+            </p>
+
+        </div>
+
+    </div>
 
     @if($orders->count())
 
-        <table class="table table-striped">
+        <div class="table-responsive shadow-sm rounded">
 
-            <thead>
+            <table class="table table-hover align-middle mb-0">
 
-            <tr>
+                <thead class="table-dark">
 
-                <th>#</th>
+                    <tr>
 
-                <th>Fecha</th>
+                        <th>Orden</th>
+                        <th>Fecha</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                        <th class="text-center">Acciones</th>
 
-                <th>Total</th>
+                    </tr>
 
-                <th>Estado</th>
+                </thead>
 
-                <th></th>
+                <tbody>
 
-            </tr>
+                @foreach($orders as $order)
 
-            </thead>
+                    <tr>
 
-            <tbody>
+                        <td>
 
-            @foreach($orders as $order)
+                            <strong>#{{ $order->id }}</strong>
 
-                <tr>
+                        </td>
 
-                    <td>{{ $order->id }}</td>
+                        <td>
 
-                    <td>{{ $order->created_at->format('d/m/Y') }}</td>
+                            {{ $order->created_at->format('d/m/Y') }}
 
-                    <td>${{ number_format($order->total,0,',','.') }}</td>
+                            <br>
 
-                    <td>
+                            <small class="text-muted">
 
-                        {{ ucfirst($order->status) }}
+                                {{ $order->created_at->format('H:i') }}
 
-                    </td>
+                            </small>
 
-                    <td>
+                        </td>
 
-                        <a
-                            href="{{ route('orders.show',$order) }}"
-                            class="btn btn-primary btn-sm">
+                        <td>
 
-                            Ver detalle
+                            <strong>
 
-                        </a>
+                                ${{ number_format($order->total,0,',','.') }}
 
-                    </td>
+                            </strong>
 
-                </tr>
+                        </td>
 
-            @endforeach
+                        <td>
 
-            </tbody>
+                            @switch($order->status)
 
-        </table>
+                                @case('pending')
 
-        {{ $orders->links() }}
+                                    <span class="badge bg-warning text-dark">
+
+                                        Pendiente
+
+                                    </span>
+
+                                    @break
+
+                                @case('paid')
+
+                                    <span class="badge bg-success">
+
+                                        Pagada
+
+                                    </span>
+
+                                    @break
+
+                                @case('completed')
+
+                                    <span class="badge bg-primary">
+
+                                        Terminada
+
+                                    </span>
+
+                                    @break
+
+                                @case('failed')
+
+                                    <span class="badge bg-danger">
+
+                                        Fallida
+
+                                    </span>
+
+                                    @break
+
+                                @default
+
+                                    <span class="badge bg-secondary">
+
+                                        {{ ucfirst($order->status) }}
+
+                                    </span>
+
+                            @endswitch
+
+                        </td>
+
+                        <td class="text-center">
+
+                            <a
+                                href="{{ route('orders.show',$order) }}"
+                                class="btn btn-outline-primary btn-sm">
+
+                                Ver detalle
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                @endforeach
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <div class="mt-4">
+
+            {{ $orders->links() }}
+
+        </div>
 
     @else
 
-        <div class="alert alert-info">
+        <div class="alert alert-info text-center">
 
-            Todavía no realizaste ninguna compra.
+            <h5 class="mb-2">
+
+                Todavía no realizaste ninguna compra.
+
+            </h5>
+
+            <p class="mb-3">
+
+                Cuando compres un servicio aparecerá aquí.
+
+            </p>
+
+            <a
+                href="{{ route('servicios.index') }}"
+                class="btn btn-primary">
+
+                Ver servicios
+
+            </a>
 
         </div>
 
