@@ -1,5 +1,0 @@
-arreglar navbar al ser admin
-arreglar alert al eliminar una orden
-botones de ver detalle mejorar estetica
-detalle de orden arreglar estetica
-eliminar area de reserva en dashboard
